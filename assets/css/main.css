@@ -1,0 +1,150 @@
+body {
+  font-family: "Roboto";
+  background: #ccc;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.text {
+  padding: 1rem;
+  font-size: 1.5rem;
+  line-height: 3rem;
+  background: #fff;
+  max-width: 1265px;
+  display: block;
+  margin: auto;
+}
+
+.header {
+  padding: 5rem;
+  font-size: 4rem;
+  line-height: 2rem;
+  background: #fff;
+  text-align: center;
+  max-width: 1138px;
+  display: block;
+  margin: auto;
+}
+
+.code {
+  background: #000;
+  color: #00e000;
+  font-size: 2rem;
+  padding: 1rem;
+  padding-top: 2rem;
+  max-width: 1265px;
+  display: block;
+  margin: auto;
+  margin-bottom: -1rem;
+  line-height: 3rem;
+}
+
+.snippet {
+  background: #ccc;
+  padding: 0.5rem;
+}
+
+.devPic {
+  display: block;
+  margin: auto;
+  max-width: 1298px;
+  background: #fff;
+}
+
+.devPic > img {
+  display: block;
+  margin: auto;
+  max-width: 1200px;
+}
+
+/* utilities */
+.center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.thumbnail {
+  max-width: 20rem !important;
+  padding-top: 2rem;
+}
+
+.link {
+  text-align: center;
+  background: #000;
+  max-width: 1300px;
+  display: block;
+  margin: auto;
+}
+
+.link p {
+  font-size: 3rem;
+  color: #00e000;
+  margin-bottom: 0;
+}
+
+.link > a {
+  text-decoration: none;
+  color: #00e000;
+  display: block;
+  padding: 0.7rem;
+  font-size: 2rem;
+  height: 2rem;
+}
+
+.link > a:hover {
+  font-size: 2.2rem;
+  text-decoration: underline;
+  transition: 0.5s;
+}
+
+.letter {
+  color: #fff !important;
+}
+
+/* Media queries < 333 */
+@media (max-width: 900px) {
+  body {
+    margin: 0;
+  }
+
+  .header {
+    padding: 1rem;
+    font-size: 2rem;
+  }
+
+  .text {
+    font-size: 1.5rem;
+  }
+
+  .code {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    padding-top: 2rem;
+    line-height: 2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  body {
+    background: #fff;
+  }
+  .text {
+    font-size: 1.2rem;
+    padding: 2rem;
+    margin: 1rem;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .code {
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  .devPic > img {
+    max-width: 300px;
+  }
+}
