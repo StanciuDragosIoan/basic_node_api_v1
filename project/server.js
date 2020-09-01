@@ -1,270 +1,274 @@
-//import http module for our server
+//import http module
 const http = require("http");
-//import file system module
 const fs = require("fs");
+const resource = require("./resource");
+const { SlowBuffer } = require("buffer");
 
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
+const PORT = process.env.port || 8000;
+
+const baseUrl = `http://localhost:${PORT}`;
 
 //create server
 const server = http.createServer((req, res) => {
-  //define url
   const url = req.url;
-  //define method
-  const method = req.method;
 
+  const method = req.method;
   //set content type header
   res.setHeader("Content-Type", "text/html");
 
-  if (url === "/") {
-    //write client response
-    res.write(`
-            <h1>Welcome to our nodeJS API project</h1>
-            <p>This is your first endpoint =)</p>
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) => {
-      //perform logic while in the callback of readFile
-      if (err) {
-        throw err;
-      }
+  switch (url) {
+    case "/":
+      res.write(`
+      <h2 style="font-size: 2rem; text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+        Welcome to our API   
+      </h2>
+      <h2 style="font-size: 2rem; text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+        Go to to <a href="http://localhost:8000/resources" target="_blank">http://localhost:8000/resources</a>  to view all current
+        resources in a pretty format
+      </h2>
+      <h2 style="font-size: 2rem; text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+        Go to to <a href="http://localhost:8000/resources/json" target="_blank">http://localhost:8000/resources/json</a>  to view all current
+        resources in a JSON-like format
+      </h2>
 
-      //check if db.json is not empty
-      if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
-        res.write(`
-            Welcome to the resources page:  
-            <ul style="list-style:none;">
-            
-                ${output.map((item) => `<li>${item}</li>`)}
-            </ul>
-            
-            `);
-        //if db.json empty return this view
-      } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far.."
-        );
-      }
+      <h2 style="font-size: 2rem; text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+        Go to to <a href="http://localhost:8000/resource/add" target="_blank">http://localhost:8000/resource/add</a>  to add
+        a new resource. Be careful! The ID you submit must not already exist, or the API won't let you add the resource.
+      </h2>
 
+      <h2 style="font-size: 2rem; text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+        Go to to <a href="#">http://localhost:8000/resource/:id</a>  (e.g. <a href="#">http://localhost:8000/resource/5</a> to access the resource with id 5)
+        to edit or delete a specific resource. Be careful! The id you access via the url must exist.
+      </h2>
+
+      <h2 style="font-size: 2rem; text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+        Your 'database' is <a href="#">db.json</a>
+        that's where you can see all your resources data is being persisted so the API 'remembers' it.
+      </h2>
+      `);
       res.end();
-    });
-  } else if (url === `/resource/add`) {
-    res.write(`
-      <h1>Add a new resource</h1>
-      <form action="/add-resource" method="POST">
-        <label for="text">Resource Text</label>
-        <input name="text" type="text"/>
-        <br> <br> 
-        <label for="id">Resource id</label>
-        <input name="id" type="number"/>
-        <br> <br>
-        <label for="date">Submission Date</label>
-        <input name="date" type="date"/>
-        <br> <br>
-        <button>Add resource</button>
-      </form>
-    `);
-    res.end();
-  } else if (url === `/add-resource` && method === "POST") {
-    //register event listener for capturing data
-    const body = [];
-    req.on("data", (chunk) => {
-      // grab the data chunks from the buffer stream
-      body.push(chunk);
-    });
-    //use the data once all has been captured
-    req.on("end", () => {
-      //all chunks are in body now
-      const parsedBody = Buffer.concat(body) //concat chunks
-        .toString(); //parse as text
+      break;
+    case "/resources":
+      resource.getAll(res);
+      break;
+    case "/resources/json":
+      resource.getJson(res);
+      break;
+    case "/resource/add":
+      if (method === "GET") {
+        res.write(`
+        <h1 style="text-align:center; margin:3rem;">Add a new resource</h1>
+        <form style="display:block; margin:auto; border: 2px solid #ccc; text-align:center; width:30rem; margin-bottom:1rem; padding:2rem!important; font-size:1.5rem!important;" action="/resource/add" method="POST"  >
+          <label for="text">Resource Text</label>
+          <input name="text" type="text"/>
+          <br> <br> 
+          <label for="id">Resource id</label>
+          <input name="id" type="number"/>
+          <br> <br>
+          <label for="date">Submission Date</label>
+          <input name="date" type="date"/>
+          <br> <br>
+          <input style="display:block; margin:auto!important; width:20rem; font-size:2rem;" type="submit" value="Add Resource"> 
+        </form>
+        `);
+        res.end();
+      } else if (method === "POST") {
+        resource.addResource(req, res);
+      }
 
-      let rawData = parsedBody.split("&").map((item) => {
-        return item.split("=")[1];
-      });
+      break;
 
-      //process data as object
-      let processedData = {};
-      processedData.text = rawData[0];
-      processedData.id = rawData[1];
-      processedData.date = rawData[2];
-      processedData = JSON.stringify(processedData);
+    case "/resource/delete":
+      if (method === "POST") {
+        const body = [];
+        req.on("data", (chunk) => {
+          body.push(chunk);
+        });
+        req.on("end", () => {
+          const parsedBody = Buffer.concat(body).toString();
+          let idToDelete = parsedBody.split("=")[1];
 
-      //validate if ID unique
-      fs.readFile("./ids.json", "utf8", (err, data) => {
-        if (err) {
-          throw err;
-        }
-        let IDs = data.split("\r\n");
-        //check if our id exists in the current ids
-        let IdNotUnique = IDs.includes(rawData[1].toString());
-        if (IdNotUnique) {
-          //force user to enter a unique id
-          res.write("Cannot enter duplicate ID...");
-          res.end();
-        } else {
-          //write ID to ids.json
-          let id = rawData[1].concat("\r\n");
-          //write new resource to db file
-          fs.readFile("./db.json", "utf8", (err, data) => {
-            if (err) {
-              throw err;
-            }
-            let currentData = data;
-            if (currentData === "") {
-              //if no previous id just write one
-              fs.writeFile("ids.json", id, (err) => {});
+          fs.readFile("db.json", "utf8", function (err, data) {
+            if (err) throw err;
+            if (data !== "") {
+              let resources = JSON.parse(data).resources;
+              resources.map((r, index) => {
+                if (r.id === idToDelete) {
+                  resources.splice(index, 1);
+                }
+              });
               let obj = {};
-              obj.data = [];
-              obj.data.push(processedData);
-              //if no other resource just write the first one
-              fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
-            } else {
-              //if resources already there
-              let obj = JSON.parse(currentData);
-              //push new resource onto data
-              obj.data.push(processedData);
-              //append id
-              fs.appendFile("ids.json", id, (err) => {});
-              //write all resources
+              obj.resources = resources;
               fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
             }
+          });
 
-            let refinedData;
+          res.write(`RESOURCE with the id ${idToDelete} deleted successfully`);
+          res.end();
+        });
+      } else {
+        res.write("404 error page not found!");
+        res.end();
+      }
 
-            fs.readFile("./db.json", "utf8", (err, data) => {
-              if (err) {
-                throw err;
-              }
-              currentData = data;
-              refinedData = JSON.parse(currentData).data;
-              refinedData = Object.values(refinedData);
+      break;
 
+    case "/resource/edit":
+      if (method === "POST") {
+        const body = [];
+        req.on("data", (chunk) => {
+          body.push(chunk);
+        });
+        req.on("end", () => {
+          const parsedBody = Buffer.concat(body).toString();
+          let idToUpdate = parsedBody.split("&")[1].split("=")[1];
+          let textToUpdate = parsedBody.split("&")[0].split("=")[1];
+          let dateToUpdate = parsedBody.split("&")[2].split("=")[1];
+          console.log(parsedBody);
+          console.log(idToUpdate);
+          console.log(textToUpdate);
+          console.log(dateToUpdate);
+
+          fs.readFile("db.json", "utf8", function (err, data) {
+            if (err) throw err;
+            if (data !== "") {
+              let resources = JSON.parse(data).resources;
+              resources.map((r, index) => {
+                if (r.id === idToUpdate) {
+                  r.text = textToUpdate.split("+").join(" ");
+                  r.id = idToUpdate;
+                  r.date = dateToUpdate;
+                }
+              });
+
+              let obj = {};
+              obj.resources = resources;
+              fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
+            }
+          });
+          res.write(`
+           
+            RESOURCE with the id ${idToUpdate} was edited successfully
+          `);
+          res.end();
+        });
+      } else if (method === "GET") {
+        res.write("404 error page not found!");
+        res.end();
+      }
+      break;
+    default:
+      let params = url.split("/");
+      let id = params[2];
+      if (id !== undefined && !isNaN(id)) {
+        fs.readFile("db.json", "utf8", function (err, data) {
+          if (err) throw err;
+          if (data !== "") {
+            let resources = JSON.parse(data).resources;
+            let IDs = [];
+            resources.map((r) => {
+              IDs.push(r.id);
+            });
+            if (IDs.includes(id)) {
               res.write(`
-              Welcome to the resources page:
-              <ul style="list-style:none;">
-                ${refinedData.map((item) => `<li>${item}</li>`)}
-              </ul>
+                <h1 style="text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;" >  
+                    Edit/Delete resource with id <span style="border-bottom:5px solid #000;">${id}</span>
+                </h1>
+                <button style="display:block; margin:auto; width:20rem; height:3rem; font-size:1.5rem; margin-top:2rem;">
+                  <a  target="_blank" href="http://localhost:8000/edit/resource/${id}">
+                    Edit resource with id ${id}
+                  </a>
+                </button>
+
+                <button style="display:block; margin:auto; width:20rem; height:3rem; font-size:1.5rem; margin-top:2rem;">
+                  <a  target="_blank" href="http://localhost:8000/delete/resource/${id}">
+                    Delete resource with id ${id}
+                  </a>
+                </button>
+              `);
+            } else {
+              res.write(`
+              <h1 style="text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+                There is currently no available resource with the id ${id} to delete/update.
+                Add it by going to <a href="http://localhost:8000/resource/add" target="_blank">http://localhost:8000/resource/add</a> 
+              </h1>
+              `);
+            }
+            res.end();
+            console.log(IDs);
+          } else {
+            res.write(`
+              <h1 style="text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+                There are currently no available resources to delete/update.
+                Add some by going to <a href="http://localhost:8000/resource/add" target="_blank">http://localhost:8000/resource/add</a> 
+              </h1>
+            `);
+          }
+        });
+      } else if (params[1] === "delete") {
+        let tempId = params[3];
+
+        fs.readFile("db.json", "utf8", function (err, data) {
+          if (err) throw err;
+          if (data !== "") {
+            let resources = JSON.parse(data).resources;
+            let IDs = [];
+            resources.map((r) => {
+              IDs.push(r.id);
+            });
+            if (IDs.includes(tempId)) {
+              res.write(`
+              <h1 style="text-align:center; margin:3rem;">Delete resource with id ${tempId}</h1>
+              <form 
+                action="/resource/delete" 
+                method="POST" 
+                style="display:block; margin:auto; border: 2px solid #ccc; text-align:center; width:30rem; margin-bottom:1rem; padding:2rem!important; font-size:1.5rem!important;" 
+              >
+                  <input  type="hidden" value=${tempId} name="id" for="id">
+                  <br><br>
+                  <input style="display:block; margin:auto!important; width:20rem; font-size:2rem;" type="submit" value="Delete Resource"> 
+             
+              </form>
               `);
 
               res.end();
-            });
-          });
-        }
-      });
-    });
-  } else if (url === "/edit/resource") {
-    fs.readFile("./idToEdit.json", "utf8", (err, data) => {
-      if (err) {
-        throw err;
-      }
-      let idToEdit = data;
-      console.log(idToEdit);
-      res.write(`
-      <h1>Edit the resource with the ID: ${idToEdit}</h1>
-      <form action="/edit-resource" method="POST">
-        <label for="text">Resource Text</label>
-        <input name="text" type="text"/>
-        <br> <br> 
-        <label for="id">Resource id</label>
-        <input name="id" value=${idToEdit} type="number" disabled="true"/>
-        <br> <br>
-        <label for="date">Submission Date</label>
-        <input name="date" type="date"/>
-        <br> <br>
-        <button>Edit resource</button>
-      </form>
-      `);
-      res.end();
-    });
-  } else if (url === "/delete/resource") {
-    fs.readFile("./idToDelete.json", "utf8", (err, data) => {
-      if (err) {
-        throw err;
-      }
-      let idToDelete = data;
-      console.log(idToDelete);
-      res.write(`
-      <h1>Delete the resource with the ID: ${idToDelete}</h1>
-      <form action="/delete-resource" method="POST">
-        <label for="id">Resource id</label>
-        <input name="id" value=${idToDelete} disabled="true" type="number"/>
-        <br> <br>
-        <br> <br>
-        <button>Delete resource</button>
-      </form>
-      `);
-      res.end();
-    });
-  } else {
-    //parse the url to grab the id
-    let id = url.split("/")[2];
-    if (id !== undefined) {
-      id.toString();
-
-      //read file async to check for id
-      fs.readFile("./ids.json", "utf8", (err, data) => {
-        if (err) {
-          throw err;
-        }
-        let RawIDs = data.split("\r\n");
-        //check if we have the id or not
-        let isUnique = true;
-        RawIDs.map((rawId) => {
-          if (rawId === id.toString()) {
-            isUnique = false;
+            } else {
+              res.write(`
+              <h1 style="text-align:center; display:block; margin:auto; width:30rem; margin-top:5rem; border:5px solid #ccc; border-radius:10px; padding:3rem;">
+                There is currently no available resource with the id ${tempId} to delete/update.
+                Add it by going to <a href="http://localhost:8000/resource/add" target="_blank">http://localhost:8000/resource/add</a> 
+              </h1>
+            `);
+              res.end();
+            }
           }
         });
-
-        //return view if new id
-        if (isUnique === true) {
-          res.write(
-            `<br>please insert a new component with the id ${id} as it currently does not exist in our DB`
-          );
-          res.write(`
-          <h1>Add a new resource as it currently does not exist</h1>
-          <form action="/add-resource" method="POST">
-            <label for="text">Resource Text</label>
-            <input name="text" type="text"/>
-            <br> <br> 
-            <label for="id">Resource id</label>
-            <input name="id" type="number"/>
-            <br> <br>
-            <label for="date">Submission Date</label>
-            <input name="date" type="date"/>
-            <br> <br>
-            <button>Add resource</button>
-          </form>
+      } else if (params[1] === "edit") {
+        let tempId = params[3];
+        res.write(`
+        <h1 style="text-align:center; margin:3rem;">EDIT resource with id ${tempId}</h1>
+        <form style="display:block; margin:auto; border: 2px solid #ccc; text-align:center; width:30rem; margin-bottom:1rem; padding:2rem!important; font-size:1.5rem!important;" 
+        action="/resource/edit" method="POST"  >
+          <label for="text">Resource Text</label>
+          <input name="text" type="text"/>
+          <br> <br> 
+          <label for="id">Resource id</label>
+          <input name="id" type="number" value='${tempId}'/>
+          <br> <br>
+          <label for="date">Submission Date</label>
+          <input name="date" type="date"/>
+          <br> <br>
+          <input style="display:block; margin:auto!important; width:20rem; font-size:2rem;" type="submit" value="Edit Resource"> 
+        </form>
         `);
-          //return view if id already exists
-        } else {
-          res.write(`<br>please edit/delete the item with the id ${id}`);
-          fs.writeFile("idToEdit.json", id, (err) => {});
-          fs.writeFile("idToDelete.json", id, (err) => {});
-          res.write(`
-            <br><br><button><a href="http://localhost:5000/edit/resource" target="_blank">Edit</a></button>
-          `);
-          res.write(`
-          <br><br><button><a href="http://localhost:5000/delete/resource" target="_blank">Delete<a/></button>
-        
-        `);
-        }
-
         res.end();
-      });
-    }
+      } else {
+        res.write("404 error page not found");
+        res.end();
+      }
   }
 });
 
-//log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
+console.log(`Server started on port ${PORT}`);
 
-//start the server
-server.listen(PORT);
+server.listen(8000);
