@@ -36,7 +36,7 @@ const resource = {
 
           if (ids.includes(dataObj.id)) {
             res.write("ID MUST BE UNIQUE");
-            res.end();
+            return res.end();
           } else {
             objToWrite = {
               resources,
