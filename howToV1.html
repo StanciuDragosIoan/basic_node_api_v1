@@ -22,9 +22,7 @@
       in a more elegant form, but for starters this is good and it will teach
       you how to do a lot of basic things related to backend development.
     </p>
-    <p class="text center bold">
-      Setup
-    </p>
+    <p class="text center bold">Setup</p>
     <p class="text">
       We will start with an empty directory (I named mine project). While inside
       that directory, let's initialize an npm package, so run:
@@ -67,7 +65,7 @@
       <img src="./img/npm-init-5.png" alt="" />
     </div>
     <p class="text">
-      It will also ask you for an author so put your name there and:
+      It will also ask you for an author so put your name there:
     </p>
     <div class="devPic">
       <img src="./img/npm-init-6.png" alt="" />
@@ -109,7 +107,8 @@ const server = http.createServer((req, res) => {
   //define url
   const url = req.url;
 
-  if (url === "/") {
+  switch(url){
+    case "/":
     //write client response
     res.write(`
             &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
@@ -117,20 +116,23 @@ const server = http.createServer((req, res) => {
         `);
     //send client response
     res.end();
+    break;
   }
-
 });
 
 //log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
+console.log(`
+    Server is running on port: 
+    ${PORT} so our API is alive =)`);
 
 //start the server
 server.listen(PORT);
 
     </pre>
     <p class="text">
-      Next in the <span class="snippet">package.json</span> file, add a
-      <span class="snippet">start</span> script under the test one:
+      Next in the package.json file, remove the
+      <span class="snippet">test</span> script add a
+      <span class="snippet">start</span> one under the test one:
     </p>
     <pre class="code">
       {
@@ -138,8 +140,7 @@ server.listen(PORT);
         "version": "1.0.0",
         "description": "node js api project",
         "main": "server.js",
-        "scripts": {
-          "test": "echo \"Error: no test specified\" && exit 1",
+        "scripts": { 
           "start": "node server.js"
         },
         "keywords": [
@@ -212,8 +213,7 @@ server.listen(PORT);
         "version": "1.0.0",
         "description": "node js api project",
         "main": "server.js",
-        "scripts": {
-          "test": "echo \"Error: no test specified\" && exit 1",
+        "scripts": { 
           "start": "nodemon server.js"
         },
         "keywords": [
@@ -235,25 +235,22 @@ server.listen(PORT);
       only have to refresh the webpage). This may seem trivial, but during
       development it is extremely useful and practical.
     </p>
-    <p class="text center bold">
-      Read (from CRUD)
-    </p>
+    <p class="text center bold">Read (from CRUD)</p>
     <p class="text">
       We will have all our 'resources' stored in a
       <span class="snippet">db.json</span> file and we will write and read from
-      that file. We will also have a couple more files to keep track of what we
-      update/delete and everything else.
+      that file.
     </p>
     <p class="text">
       Start by importing the file system module in our server script. We will
       also set the
       <span class="snippet">Content-Type</span> as
-      <span class="snippet">text/html</span> so we can return some rudimentary
-      views from our API. Finally we will define a second endpoint
+      <span class="snippet">text/html</span> so we can return some html views
+      from our API. Finally we will define a second endpoint
       <span class="snippet">/resources</span>:
     </p>
     <pre class="code">
-//import http module for our server
+      //import http module for our server
 const http = require("http");
 //import file system module
 const fs = require("fs");
@@ -265,31 +262,38 @@ const PORT = process.env.port || 5000;
 const server = http.createServer((req, res) => {
   //define url
   const url = req.url;
-
   //set content type header
   res.setHeader("Content-Type", "text/html");
 
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //write client response
-    res.write(`
+  switch (url) {
+    case "/":
+      //write client response
+      res.write(`
+        &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
+        &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
+            `);
+      //send client response
+      res.end();
+      break;
+    case "/resources":
+      //write client response
+      res.write(`
     &lt;h1&gt;Welcome to the resources page&lt;/h1&gt;
-    &lt;p&gt;Please see below all our current resources:&lt;/p&gt;
+    &lt;p&gt;
+        Please see below all our 
+        current resources:
+    &lt;/p&gt;
 `);
-    //send client response
-    res.end();
+      //send client response
+      res.end();
+      break;
   }
 });
 
 //log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
+console.log(`
+    Server is running on port: 
+    ${PORT} so our API is alive =)`);
 
 //start the server
 server.listen(PORT);
@@ -305,29 +309,113 @@ server.listen(PORT);
       you will see the view from our second endpoint.
     </p>
     <p class="text">
-      It is now time for us to add some hard-coded resources in the
-      <span class="snippet">db.json</span> file so we can implement the 'read'
-      from CRUD. Create the <span class="snippet">db.json</span> file and add
-      the below to it:
+      Our data will be stored in a <span class="snippet">db.json</span> file, so
+      create it and paste the below JSON data in it:
     </p>
     <pre class="code">
       {
-        "data": [
-          "{\"text\":\"test\",\"id\":\"1\",\"date\":\"2020-08-20\"}",
-          "{\"text\":\"test\",\"id\":\"4\",\"date\":\"2020-08-20\"}",
-          "{\"text\":\"test\",\"id\":\"5\",\"date\":\"2020-08-20\"}"
+        "resources": [
+          { 
+            "text": "test", 
+            "id": "1", 
+            "date": "2020-09-17" 
+          },
+          { 
+            "text": "test2323", 
+            "id": "2", 
+            "date": "2020-09-08" 
+          },
+          { 
+            "text": "Test2", 
+            "id": "3", 
+            "date": "2020-09-15" 
+          }
         ]
-      }      
+      }
+      
     </pre>
     <p class="text">
-      The resources are formatted as a JSON object but encoded as string. Next
-      modify the if of the new endpoint as per below:
+      If you have not worked with JSON before, you will see that it is a very
+      handy format, which we can use for a bunch of awesome things. If you did
+      use it, you'll still enjoy this.
+    </p>
+    <p class="text">
+      We will now create a thrid file now
+      <span class="snippet">resource.js</span>. This file will work like a
+      'controller' for our resources (if you are familiar with the MVC pattern)
+      writing, reading and editing them. This file will only have one method for
+      now <span class="snippet">getResources()</span> so let's implement it:
+    </p>
+    <pre class="code">
+const fs = require("fs");
+const resource = {
+  getAll: (res) => {
+    fs.readFile("db.json", "utf8", function (err, data) 
+    {
+      if (err) throw err;
+      if (data !== "") {
+        let resources = JSON.parse(data).resources;
+
+        resources.map((r) => {
+          res.write(`
+            &lt;div 
+                style="display:block; 
+                margin:auto; border: 2px solid #ccc; 
+                text-align:center; 
+                width:30rem; 
+                margin-bottom:1rem; 
+                border-radius:10px;"
+            &gt;
+                  &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
+                  &lt;p&gt;ID: ${r.id} &lt;/p&gt;
+                  &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
+                &lt;/div&gt;
+              `);
+        });
+      } else {
+        res.write(`
+            &lt;div 
+                style="display:block; 
+                margin:auto; border: 2px solid #ccc; 
+                text-align:center; 
+                width:30rem; 
+                margin-bottom:1rem; 
+                border-radius:10px;"
+            &gt;
+              &lt;p&gt;No current resources&lt;/p&gt;
+            &lt;/div&gt;
+          `);
+      }
+
+      res.end();
+    });
+  },
+};
+
+module.exports = resource;
+
+    </pre>
+    <p class="text">
+      Note how this method, uses the response object
+      <span class="snippet">res</span> as argument and it simply reads the
+      <span class="snippet">db.json</span> file, loops through the resources and
+      displays each of them in a div. The request and response objects are
+      available in the request listener from
+      <span class="snippet">http.createServer((req,res)=>{})</span>
+    </p>
+    <p class="text">
+      Next import the <span class="snippet">resource</span> module into
+      <span class="snippet">server.js</span> and call the
+      <span class="snippet">getResources()</span> method when the
+      <span class="snippet">/resources</span>
+      endpoint is hit:
     </p>
     <pre class="code">
 //import http module for our server
 const http = require("http");
 //import file system module
 const fs = require("fs");
+const resource = require("./resource");
 
 //define port for our server to listen to
 const PORT = process.env.port || 5000;
@@ -336,1042 +424,254 @@ const PORT = process.env.port || 5000;
 const server = http.createServer((req, res) => {
   //define url
   const url = req.url;
-
   //set content type header
   res.setHeader("Content-Type", "text/html");
 
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1>Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-      //perform logic while in the callback of readFile
-      if (err) {
-        throw err;
-      }
-
-      //check if db.json is not empty
-      if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
-        res.write(`
-            Welcome to the resources page:  
-            &lt;ul style="list-style:none;"&gt;
-            
-                ${output.map((item) =&gt; `&lt;li&gt;${item}&lt;/li&gt;`)}
-            &lt;/ul&gt;
-            
+  switch (url) {
+    case "/":
+      //write client response
+      res.write(`
+        &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
+        &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
             `);
-        //if db.json empty return this view
-      } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far.."
-        );
-      }
-
+      //send client response
       res.end();
-    });
+      break;
+    case "/resources":
+      resource.getAll(res);
+      break;
   }
 });
 
 //log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
+console.log(`
+    Server is running on port: 
+    ${PORT} so our API is alive =)`);
 
 //start the server
 server.listen(PORT);
 
     </pre>
     <p class="text">
-      You can test the default view for
-      <span class="snippet">/resources</span> by deleting all the data in it.
-      Next, put the data back and we will start working on the add
-      functionality.
-    </p>
-    <p class="text center bold">
-      Create (from CRUD)
+      Next if you go to
+      <span class="snippet"
+        ><a href="http://localhost:5000/resources" target="_blank"
+          >http://localhost:5000//resources</a
+        ></span
+      >, you can see all the resources displayed as cards in the browser.
     </p>
     <p class="text">
+      Feel free to test the endpoint more by deleting/modifiying/adding some
+      more data in <span class="snippet">db.json</span>. Next, put the data back
+      and we will start working on the add functionality.
+    </p>
+    <p class="text center bold">Create (from CRUD)</p>
+    <p class="text">
       We will now implement the create functionality for our app. We will need 2
-      routes for this, one will handle the form for adding a resource and the
-      other one will handle the submit and the processing of the data. Create a
-      3rd route, this time <span class="snippet">/resource/add</span> in the
+      different requests for this, one will render the form for adding a
+      resource and the other one will handle the submit and the processing of
+      the data. Create a 3rd route, this time
+      <span class="snippet">/resource/add</span> in the
       <span class="snippet">server.js</span> file:
     </p>
     <pre class="code">
-//import http module for our server
-const http = require("http");
-//import file system module
-const fs = require("fs");
-
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
-
-//create server
-const server = http.createServer((req, res) => {
-  //define url
-  const url = req.url;
-
-  //set content type header
-  res.setHeader("Content-Type", "text/html");
-
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-      //perform logic while in the callback of readFile
-      if (err) {
-        throw err;
-      }
-
-      //check if db.json is not empty
-      if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
+      //snippet from server.js
+      //add this under the 'resource' case 
+      case "/resource/add":
+      if (method === "GET") {
         res.write(`
-            Welcome to the resources page:  
-            &lt;ul style="list-style:none;"&gt;
+        &lt;h1 
+          style="text-align:center; 
+          margin:3rem;"
+        &gt;
+          Add a new resource
+        &lt;/h1&gt;
+        &lt;form 
+          style="display:block; 
+          margin:auto; 
+          border: 2px solid #ccc; 
+          text-align:center; 
+          width:30rem; 
+          margin-bottom:1rem; 
+          padding:2rem!important; 
+          font-size:1.5rem!important;" 
+          
+          action="/resource/add"
+          
+          method="POST"
+        &gt;
+          &lt;label for="text"&gt;Resource Text&lt;/label&gt;
+          &lt;input name="text" type="text"/&gt;
+          &lt;br&gt; &lt;br&gt; 
+          &lt;label for="id"&gt;Resource id&lt;/label&gt;
+          &lt;input name="id" type="number"/&gt;
+          &lt;br&gt; &lt;br&gt;
+          &lt;label for="date"&gt;Submission Date&lt;/label&gt;
+          &lt;input name="date" type="date"/&gt;
+          &lt;br&gt; &lt;br&gt;
+          &lt;input 
+            style="display:block; 
+            margin:auto!important; 
+            width:20rem; 
+            font-size:2rem;" 
+            type="submit" 
             
-                ${output.map((item) =&gt; `&lt;li&gt;${item}&lt;/li&gt;`)}
-            &lt;/ul&gt;
-            
-            `);
-        //if db.json empty return this view
-      } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far.."
-        );
+            value="Add Resource"&gt; 
+        &lt;/form&gt;
+        `);
+        res.end();
+      } else if (method === "POST") {
+        resource.addResource(req, res);
       }
 
-      res.end();
-    });
-  } else if (url === `/resource/add`) {
-    res.write(`
-      &lt;h1&gt;Add a new resource&lt;/h1&gt;
-      &lt;form action="/add-resource" method="POST"&gt;
-        &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-        &lt;input name="text" type="text"/&gt;
-        &lt;br&gt; &lt;br&gt; 
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" type="number"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-        &lt;input name="date" type="date"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Add resource&lt;/button&gt;
-      &lt;/form&gt;
-    `);
-    res.end();
-  }
-});
-
-//log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
-
-//start the server
-server.listen(PORT);
-
+      break;
     </pre>
     <p class="text">
-      The <span class="snippet">/resource/add</span> endpoint will only return
-      the form, the <span class="snippet">/add-resource</span> endpoint will do
-      the magic behind the scenes and process everything for us. Not that the
-      form rendered by <span class="snippet">/resource/add</span> has a method
-      attribute (set to POST) and an action attribute (pointing to our
-      endpoint).
-    </p>
-    <p class="text">
-      Next create the <span class="snippet">add-resource</span> endpoint. Note
-      that for it, we need to check both the method and the url:
+      Note how we check the <span class="snippet">method</span> variable, to see
+      if we have a <span class="snippet">GET</span> or
+      <span class="snippet">POST</span> request. The method is a property of the
+      request object ( <span class="snippet">req</span> ) We need to define the
+      <span class="snippet">method</span> variable so add it right under the url
+      in <span class="snippet">server.js</span>:
     </p>
     <pre class="code">
-//import http module for our server
-const http = require("http");
-//import file system module
-const fs = require("fs");
-
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
-
-//create server
-const server = http.createServer((req, res) => {
   //define url
   const url = req.url;
   //define method
   const method = req.method;
-
-  //set content type header
-  res.setHeader("Content-Type", "text/html");
-
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-      //perform logic while in the callback of readFile
-      if (err) {
-        throw err;
-      }
-
-      //check if db.json is not empty
-      if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
-        res.write(`
-            Welcome to the resources page:  
-            &lt;ul style="list-style:none;"&gt;
-            
-                ${output.map((item) =&gt; `&lt;li&gt;${item}&lt;/li&gt;`)}
-            &lt;/ul&gt;
-            
-            `);
-        //if db.json empty return this view
-      } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far..",
-        );
-      }
-
-      res.end();
-    });
-  } else if (url === `/resource/add`) {
-    res.write(`
-      &lt;h1&gt;Add a new resource&lt;/h1&gt;
-      &lt;form action="/add-resource" method="POST"&gt;
-        &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-        &lt;input name="text" type="text"/&gt;
-        &lt;br&gt; &lt;br&gt; 
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" type="number"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-        &lt;input name="date" type="date"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Add resource&lt;/button&gt;
-      &lt;/form&gt;
-    `);
-    res.end();
-  } else if (url === `/add-resource` && method === "POST") {
-    //register event listener for capturing data
-    const body = [];
-    req.on("data", (chunk) => {
-      // grab the data chunks from the buffer stream
-      body.push(chunk);
-    });
-
-    //use the data once all has been captured
-    req.on("end", () => {
-      //all data chunks are in body now
-      const parsedBody = Buffer.concat(body) //concat chunks
-        .toString(); //parse as text
-      res.write(`
-        here is the data: 
-        &lt;br>\&gt;
-        ${parsedBody}`);
-      res.end();
-    });
-  }
-});
-
-//log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
-
-//start the server
-server.listen(PORT);
-
     </pre>
     <p class="text">
-      In order to process the data, we use 2 event listeners
-      <span class="snippet">on('data')</span> and
-      <span class="snippet">on('end')</span>. The
-      <span class="snippet">on('data')</span> event listener captures the data
-      from the Buffer stream while the
-      <span class="snippet">on('end')</span> event listener concatenates all the
-      data chunks in the <span class="snippet">body</span> array and parses it
-      as string so we can use it further on in our application.
+      Now if you go to:
+
+      <a href="http://localhost:5000/resource/add" target="_blank"
+        >http://localhost:5000/resource/add</a
+      >
+      we can see the form in the browser.
     </p>
     <p class="text">
-      Now let's complete the data processing and saving it to the
-      <span class="snippet">db.json</span> file. We will add a simple server
-      side validation forcing the user to enter resources with a unique id (so
-      they cannot enter the same id twice). Next create the
-      <span class="snippet">ids.json</span> file and replace the logic for the
-      <span class="snippet">/add-resource</span> route as below:
+      Let's now implement the <span class="snippet">addResource()</span> method
+      in <span class="snippet">resource.js</span>. Note that the method
+      basically takes the input from the user, and adds it to the
+      <span class="snippet">db.json</span> file, while making sure the id we
+      introduce is unique. So we cannot introduce the same id twice:
     </p>
     <pre class="code">
-//import http module for our server
-const http = require("http");
-//import file system module
 const fs = require("fs");
+const resource = {
+addResource: (req, res) => {
+  const body = [];
+  req.on("data", (chunk) => {
+    body.push(chunk);
+  });
 
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
+  req.on("end", () => {
+    const parsedBody = Buffer
+      .concat(body).toString();
+    let rawData = parsedBody
+      .split("&").map((item) => {
+      return item.split("=")[1];
+    });
 
-//create server
-const server = http.createServer((req, res) => {
-  //define url
-  const url = req.url;
-  //define method
-  const method = req.method;
+    let dataObj = {};
 
-  //set content type header
-  res.setHeader("Content-Type", "text/html");
+    dataObj.text = rawData[0].split("+")
+                             .join(" ");
+    dataObj.id = rawData[1];
+    dataObj.date = rawData[2];
 
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-      //perform logic while in the callback of readFile
+fs.readFile("./db.json", "utf8", (err, data) => {
       if (err) {
         throw err;
       }
 
-      //check if db.json is not empty
+      let resources;
+      let objToWrite = {};
       if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
-        res.write(`
-            Welcome to the resources page:  
-            &lt;ul style="list-style:none;"&gt;
-            
-                ${output.map((item) =&gt; `&lt;li&gt;${item}&lt;/li&gt;`)}
-            &lt;/ul&gt;
-            
-            `);
-        //if db.json empty return this view
-      } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far..",
-        );
-      }
-
-      res.end();
-    });
-  } else if (url === `/resource/add`) {
-    res.write(`
-      &lt;h1&gt;Add a new resource&lt;/h1&gt;
-      &lt;form action="/add-resource" method="POST"&gt;
-        &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-        &lt;input name="text" type="text"/&gt;
-        &lt;br&gt; &lt;br&gt; 
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" type="number"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-        &lt;input name="date" type="date"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Add resource&lt;/button&gt;
-      &lt;/form&gt;
-    `);
-    res.end();
-  } else if (url === `/add-resource` && method === "POST") {
-    //register event listener for capturing data
-    const body = [];
-    req.on("data", (chunk) => {
-      // grab the data chunks from the buffer stream
-      body.push(chunk);
-    });
-    //use the data once all has been captured
-    req.on("end", () => {
-      //all chunks are in body now
-      const parsedBody = Buffer.concat(body) //concat chunks
-        .toString(); //parse as text
-
-      let rawData = parsedBody.split("&").map((item) => {
-        return item.split("=")[1];
-      });
-
-      //process data as object
-      let processedData = {};
-      processedData.text = rawData[0];
-      processedData.id = rawData[1];
-      processedData.date = rawData[2];
-      processedData = JSON.stringify(processedData);
-
-      //validate if ID unique
-      fs.readFile("./ids.json", "utf8", (err, data) => {
-        if (err) {
-          throw err;
-        }
-        let IDs = data.split("\r\n");
-        //check if our id exists in the current ids
-        let IdNotUnique = IDs.includes(rawData[1].toString());
-        if (IdNotUnique) {
-          //force user to enter a unique id
-          res.write("Cannot enter duplicate ID...");
-          res.end();
-        } else {
-          //write ID to ids.json
-          let id = rawData[1].concat("\r\n");
-          //write new resource to db file
-          fs.readFile("./db.json", "utf8", (err, data) => {
-            if (err) {
-              throw err;
-            }
-            let currentData = data;
-            if (currentData === "") {
-              //if no previous id just write one
-              fs.writeFile("ids.json", id, (err) => {});
-              let obj = {};
-              obj.data = [];
-              obj.data.push(processedData);
-              //if no other resource just write the first one
-              fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
-            } else {
-              //if resources already there
-              let obj = JSON.parse(currentData);
-              //push new resource onto data
-              obj.data.push(processedData);
-              //append id
-              fs.appendFile("ids.json", id, (err) => {});
-              //write all resources
-              fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
-            }
-
-            let refinedData;
-
-            fs.readFile("./db.json", "utf8", (err, data) => {
-              if (err) {
-                throw err;
-              }
-              currentData = data;
-              refinedData = JSON.parse(currentData).data;
-              refinedData = Object.values(refinedData);
-
-              res.write(`
-              Welcome to the resources page:
-              &lt;ul style="list-style:none;"&lt;
-                ${refinedData.map((item) => `&lt;li&lt;${item}&lt;/li&lt;`)}
-              &lt;/ul&lt;
-              `);
-
-              res.end();
-            });
-          });
-        }
-      });
-    });
-  }
-});
-
-//log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
-
-//start the server
-server.listen(PORT);
-
-    </pre>
-    <p class="text">
-      Now we can add resources, test that by deleting all the resources from
-      <span class="snippet">db.json</span> and the id from
-      <span class="snippet">id.json</span> and add a bunch of new resources,
-      this time through the API interface. Note that each time you add a
-      resource, you are redirected to the
-      <span class="snippet">/add-resource</span> endpoint (where you can also
-      see the current resources). For adding another resource, go back to
-      <span class="snippet">/resource/add</span>. Test also the id validation
-      (try adding a new resource with the same id as a previous one). We have
-      completed the add functionality of our api.
-    </p>
-    <p class="text center bold">Update and Delete</p>
-    <p class="text">
-      We will now implement the update and delete logic. For that we will use 2
-      files: <span class="snippet">idToUpdate.json</span> and
-      <span class="snippet">idToDelete.json</span>. The 2 files will be used to
-      'pass' the ID between routes. The edit/delete functionality will be based
-      on a view returned by the endpoint
-      <span class="snippet">/resource/:id</span> and whatever id we will type
-      after <span class="snippet">/resource</span> will be the one
-      edited/deleted. We will also make it so that the same view prompts the
-      user to enter a new resource if the
-      <span class="snippet">/id</span> introduced does not exist (as we do not
-      currently have the respective resource). For this more dynamic in a
-      generic <span class="snippet">else { }</span> statement. Create the 2 json
-      files mentioned above and dd it as per below:
-    </p>
-    <pre class="code">
-//import http module for our server
-const http = require("http");
-//import file system module
-const fs = require("fs");
-
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
-
-//create server
-const server = http.createServer((req, res) => {
-  //define url
-  const url = req.url;
-  //define method
-  const method = req.method;
-
-  //set content type header
-  res.setHeader("Content-Type", "text/html");
-
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) => {
-      //perform logic while in the callback of readFile
-      if (err) {
-        throw err;
-      }
-
-      //check if db.json is not empty
-      if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
-        res.write(`
-            Welcome to the resources page:  
-            &lt;ul style="list-style:none;"&gt;
-            
-                ${output.map((item) => `&lt;li&gt;${item}&lt;/li&gt;`)}
-            &lt;/ul&gt;
-            
-            `);
-        //if db.json empty return this view
-      } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far.."
-        );
-      }
-
-      res.end();
-    });
-  } else if (url === `/resource/add`) {
-    res.write(`
-      &lt;h1&gt;Add a new resource&lt;/h1&gt;
-      &lt;form action="/add-resource" method="POST"&gt;
-        &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-        &lt;input name="text" type="text"/&gt;
-        &lt;br&gt; &lt;br&gt; 
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" type="number"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-        &lt;input name="date" type="date"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Add resource&lt;/button&gt;
-      &lt;/form&gt;
-    `);
-    res.end();
-  } else if (url === `/add-resource` && method === "POST") {
-    //register event listener for capturing data
-    const body = [];
-    req.on("data", (chunk) => {
-      // grab the data chunks from the buffer stream
-      body.push(chunk);
-    });
-    //use the data once all has been captured
-    req.on("end", () => {
-      //all chunks are in body now
-      const parsedBody = Buffer.concat(body) //concat chunks
-        .toString(); //parse as text
-
-      let rawData = parsedBody.split("&").map((item) => {
-        return item.split("=")[1];
-      });
-
-      //process data as object
-      let processedData = {};
-      processedData.text = rawData[0];
-      processedData.id = rawData[1];
-      processedData.date = rawData[2];
-      processedData = JSON.stringify(processedData);
-
-      //validate if ID unique
-      fs.readFile("./ids.json", "utf8", (err, data) => {
-        if (err) {
-          throw err;
-        }
-        let IDs = data.split("\r\n");
-        //check if our id exists in the current ids
-        let IdNotUnique = IDs.includes(rawData[1].toString());
-        if (IdNotUnique) {
-          //force user to enter a unique id
-          res.write("Cannot enter duplicate ID...");
-          res.end();
-        } else {
-          //write ID to ids.json
-          let id = rawData[1].concat("\r\n");
-          //write new resource to db file
-          fs.readFile("./db.json", "utf8", (err, data) => {
-            if (err) {
-              throw err;
-            }
-            let currentData = data;
-            if (currentData === "") {
-              //if no previous id just write one
-              fs.writeFile("ids.json", id, (err) => {});
-              let obj = {};
-              obj.data = [];
-              obj.data.push(processedData);
-              //if no other resource just write the first one
-              fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
-            } else {
-              //if resources already there
-              let obj = JSON.parse(currentData);
-              //push new resource onto data
-              obj.data.push(processedData);
-              //append id
-              fs.appendFile("ids.json", id, (err) => {});
-              //write all resources
-              fs.writeFile("db.json", JSON.stringify(obj), (err) => {});
-            }
-
-            let refinedData;
-
-            fs.readFile("./db.json", "utf8", (err, data) => {
-              if (err) {
-                throw err;
-              }
-              currentData = data;
-              refinedData = JSON.parse(currentData).data;
-              refinedData = Object.values(refinedData);
-
-              res.write(`
-              Welcome to the resources page:
-              &lt;ul style="list-style:none;"&gt;
-                ${refinedData.map((item) => `&lt;li&gt;${item}&lt;/li&gt;`)}
-              &lt;/ul&gt;
-              `);
-
-              res.end();
-            });
-          });
-        }
-      });
-    });
-  } else {
-    //parse the url to grab the id
-    let id = url.split("/")[2];
-    if (id !== undefined) {
-      id.toString();
-
-      //read file async to check for id
-      fs.readFile("./ids.json", "utf8", (err, data) =&gt; {
-        if (err) {
-          throw err;
-        }
-        let RawIDs = data.split("\r\n");
-        //check if we have the id or not
-        let isUnique = true;
-        RawIDs.map((rawId) => {
-          if (rawId === id.toString()) {
-            isUnique = false;
-          }
+        let resources = JSON.parse(data).resources;
+        var isUnique = true;
+        let ids = [];
+        resources.map((r) => {
+          ids.push(r.id.toString());
         });
 
-        //return view if new id
-        if (isUnique === true) {
-          res.write(
-            `&lt;br&gt;please insert a new component with the 
-            id ${id} as it currently does not exist in our DB`
-          );
-          res.write(`
-          &lt;h1&gt;Add a new resource as it currently does not exist&lt;/h1&gt;
-          &lt;form action="/add-resource" method="POST"&gt;
-            &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-            &lt;input name="text" type="text"/&gt;
-            &lt;br&gt; &lt;br&gt; 
-            &lt;label for="id"&gt;Resource id&lt;/label&gt;
-            &lt;input name="id" type="number"/&gt;
-            &lt;br&gt; &lt;br&gt;
-            &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-            &lt;input name="date" type="date"/&gt;
-            &lt;br&gt; &lt;br&gt;
-            &lt;button&gt;Add resource&lt;/button&gt;
-          &lt;/form&gt;
-        `);
-          //return view if id already exists
+        if (ids.includes(dataObj.id)) {
+          res.write("ID MUST BE UNIQUE");
+          return res.end();
         } else {
-          res.write(`&lt;br&gt;please edit/delete the item with the id ${id}`);
-          fs.writeFile("idToEdit.json", id, (err) =&gt; {});
-          fs.writeFile("idToDelete.json", id, (err) =&gt; {});
-          res.write(`
-            &lt;br&gt;
-            &lt;br&gt;
-              &lt;button&gt;
-                &lt;a 
-                  href="http://localhost:5000/edit/resource" 
-                  target="_blank"&gt;
-                    Edit
-                  &lt;/a&gt;
-                &lt;/button&gt;
-          `);
-          res.write(`
-          &lt;br&gt;
-          &lt;br&gt;
-            &lt;button&gt;
-              &lt;a 
-                href="http://localhost:5000/delete/resource" 
-                target="_blank"&gt;
-                  Delete
-                &lt;a/&gt;
-              &lt;/button&gt;
-        
-        `);
+          objToWrite = {
+            resources,
+          };
+          objToWrite.resources.push(dataObj);
         }
-
-        res.end();
-      });
-    }
-  }
-});
-
-//log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
-
-//start the server
-server.listen(PORT);
-
-    </pre>
-    <p class="text">
-      Now if you go to
-      <span class="snippet">http://localhost:5000/resource/an ID</span> the
-      application will either prompt you to edit/delete it or to add it if it
-      does not exist. We will now complete our application by creating the last
-      2 routes for <span class="snippet">/edit/resource</span> and
-      <span class="snippet">/delete/resource</span>:
-    </p>
-    <pre class="code">
-//import http module for our server
-const http = require("http");
-//import file system module
-const fs = require("fs");
-
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
-
-//create server
-const server = http.createServer((req, res) => {
-  //define url
-  const url = req.url;
-  //define method
-  const method = req.method;
-
-  //set content type header
-  res.setHeader("Content-Type", "text/html");
-
-  if (url === "/") {
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API project&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-  } else if (url === "/resources") {
-    //read db.json Asynchronously
-    fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-      //perform logic while in the callback of readFile
-      if (err) {
-        throw err;
-      }
-
-      //check if db.json is not empty
-      if (data !== "") {
-        //parse data
-        const JSONdata = JSON.parse(data).data;
-        //convert to object
-        let output = Object.values(JSONdata);
-        //map and display in html response
-        res.write(`
-            Welcome to the resources page:  
-            &lt;ul style="list-style:none;"&gt;
-            
-                ${output.map((item) =&gt; `&lt;li&gt;${item}&lt;/li&gt;`)}
-            &lt;/ul&gt;
-            
-            `);
-        //if db.json empty return this view
       } else {
-        res.write(
-          "Welcome to the resources page, there is nothing to display so far.."
-        );
+        resources = [];
+        resources.push(dataObj);
+        objToWrite.resources = resources;
       }
 
+      fs.writeFile(
+          "db.json", 
+          JSON.stringify(objToWrite), 
+          (err) => {});
+
+      res.write("Resource added successfully");
       res.end();
     });
-  } else if (url === `/resource/add`) {
-    res.write(`
-      &lt;h1&gt;Add a new resource&lt;/h1&gt;
-      &lt;form action="/add-resource" method="POST"&gt;
-        &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-        &lt;input name="text" type="text"/&gt;
-        &lt;br&gt; &lt;br&gt; 
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" type="number"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-        &lt;input name="date" type="date"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Add resource&lt;/button&gt;
-      &lt;/form&gt;
-    `);
-    res.end();
-  } else if (url === `/add-resource` && method === "POST") {
-    //register event listener for capturing data
-    const body = [];
-    req.on("data", (chunk) =&gt; {
-      // grab the data chunks from the buffer stream
-      body.push(chunk);
-    });
-    //use the data once all has been captured
-    req.on("end", () =&gt; {
-      //all chunks are in body now
-      const parsedBody = Buffer.concat(body) //concat chunks
-        .toString(); //parse as text
+  });
+},
 
-      let rawData = parsedBody.split("&").map((item) =&gt; {
-        return item.split("=")[1];
+getAll: (res) => {
+  fs.readFile("db.json", "utf8", function (err, data) 
+  {
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+
+      resources.map((r) => {
+        res.write(`
+          &lt;div 
+              style="display:block; 
+              margin:auto; border: 2px solid #ccc; 
+              text-align:center; 
+              width:30rem; 
+              margin-bottom:1rem; 
+              border-radius:10px;"
+          &gt;
+                &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
+                &lt;p&gt;ID: ${r.id} &lt;/p&gt;
+                &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
+              &lt;/div&gt;
+            `);
       });
-
-      //process data as object
-      let processedData = {};
-      processedData.text = rawData[0];
-      processedData.id = rawData[1];
-      processedData.date = rawData[2];
-      processedData = JSON.stringify(processedData);
-
-      //validate if ID unique
-      fs.readFile("./ids.json", "utf8", (err, data) =&gt; {
-        if (err) {
-          throw err;
-        }
-        let IDs = data.split("\r\n");
-        //check if our id exists in the current ids
-        let IdNotUnique = IDs.includes(rawData[1].toString());
-        if (IdNotUnique) {
-          //force user to enter a unique id
-          res.write("Cannot enter duplicate ID...");
-          res.end();
-        } else {
-          //write ID to ids.json
-          let id = rawData[1].concat("\r\n");
-          //write new resource to db file
-          fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-            if (err) {
-              throw err;
-            }
-            let currentData = data;
-            if (currentData === "") {
-              //if no previous id just write one
-              fs.writeFile("ids.json", id, (err) =&gt; {});
-              let obj = {};
-              obj.data = [];
-              obj.data.push(processedData);
-              //if no other resource just write the first one
-              fs.writeFile("db.json", JSON.stringify(obj), (err) =&gt; {});
-            } else {
-              //if resources already there
-              let obj = JSON.parse(currentData);
-              //push new resource onto data
-              obj.data.push(processedData);
-              //append id
-              fs.appendFile("ids.json", id, (err) =&gt; {});
-              //write all resources
-              fs.writeFile("db.json", JSON.stringify(obj), (err) =&gt; {});
-            }
-
-            let refinedData;
-
-            fs.readFile("./db.json", "utf8", (err, data) =&gt; {
-              if (err) {
-                throw err;
-              }
-              currentData = data;
-              refinedData = JSON.parse(currentData).data;
-              refinedData = Object.values(refinedData);
-
-              res.write(`
-              Welcome to the resources page:
-              &lt;ul style="list-style:none;"&gt;
-                ${refinedData.map((item) =&gt; `&lt;li&gt;${item}&lt;/li&gt;`)}
-              &lt;/ul&gt;
-              `);
-
-              res.end();
-            });
-          });
-        }
-      });
-    });
-  } else if (url === "/edit/resource") {
-    fs.readFile("./idToEdit.json", "utf8", (err, data) =&gt; {
-      if (err) {
-        throw err;
-      }
-      let idToEdit = data;
-      console.log(idToEdit);
+    } else {
       res.write(`
-      &lt;h1&gt;Edit the resource with the ID: ${idToEdit}&lt;/h1&gt;
-      &lt;form action="/edit-resource" method="POST"&gt;
-        &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-        &lt;input name="text" type="text"/&gt;
-        &lt;br&gt; &lt;br&gt; 
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" value=${idToEdit} type="number" disabled="true"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-        &lt;input name="date" type="date"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Edit resource&lt;/button&gt;
-      &lt;/form&gt;
-      `);
-      res.end();
-    });
-  } else if (url === "/delete/resource") {
-    fs.readFile("./idToDelete.json", "utf8", (err, data) =&gt; {
-      if (err) {
-        throw err;
-      }
-      let idToDelete = data;
-      console.log(idToDelete);
-      res.write(`
-      &lt;h1&gt;Delete the resource with the ID: ${idToDelete}&lt;/h1&gt;
-      &lt;form action="/delete-resource" method="POST"&gt;
-        &lt;label for="id"&gt;Resource id&lt;/label&gt;
-        &lt;input name="id" value=${idToDelete} disabled="true" type="number"/&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;br&gt; &lt;br&gt;
-        &lt;button&gt;Delete resource&lt;/button&gt;
-      &lt;/form&gt;
-      `);
-      res.end();
-    });
-  } else {
-    //parse the url to grab the id
-    let id = url.split("/")[2];
-    if (id !== undefined) {
-      id.toString();
-
-      //read file async to check for id
-      fs.readFile("./ids.json", "utf8", (err, data) =&gt; {
-        if (err) {
-          throw err;
-        }
-        let RawIDs = data.split("\r\n");
-        //check if we have the id or not
-        let isUnique = true;
-        RawIDs.map((rawId) =&gt; {
-          if (rawId === id.toString()) {
-            isUnique = false;
-          }
-        });
-
-        //return view if new id
-        if (isUnique === true) {
-          res.write(
-            `&lt;br&gt;please insert a new component with 
-            the id ${id} as it currently does not exist in our DB`
-          );
-          res.write(`
-          &lt;h1&gt;Add a new resource as it currently does not exist&lt;/h1&gt;
-          &lt;form action="/add-resource" method="POST"&gt;
-            &lt;label for="text"&gt;Resource Text&lt;/label&gt;
-            &lt;input name="text" type="text"/&gt;
-            &lt;br&gt; &lt;br&gt; 
-            &lt;label for="id"&gt;Resource id&lt;/label&gt;
-            &lt;input name="id" type="number"/&gt;
-            &lt;br&gt; &lt;br&gt;
-            &lt;label for="date"&gt;Submission Date&lt;/label&gt;
-            &lt;input name="date" type="date"/&gt;
-            &lt;br&gt; &lt;br&gt;
-            &lt;button&gt;Add resource&lt;/button&gt;
-          &lt;/form&gt;
+          &lt;div 
+              style="display:block; 
+              margin:auto; border: 2px solid #ccc; 
+              text-align:center; 
+              width:30rem; 
+              margin-bottom:1rem; 
+              border-radius:10px;"
+          &gt;
+            &lt;p&gt;No current resources&lt;/p&gt;
+          &lt;/div&gt;
         `);
-          //return view if id already exists
-        } else {
-          res.write(`&lt;br&gt;please edit/delete the item with the id ${id}`);
-          fs.writeFile("idToEdit.json", id, (err) =&gt; {});
-          fs.writeFile("idToDelete.json", id, (err) =&gt; {});
-          res.write(`
-            &lt;br&gt;&lt;br&gt;
-              &lt;button&gt;
-                &lt;a 
-                  href="http://localhost:5000/edit/resource" 
-                  target="_blank"&gt;Edit
-                &lt;/a&gt;
-              &lt;/button&gt;
-          `);
-          res.write(`
-          &lt;br&gt;&lt;br&gt;
-            &lt;button&gt;
-              &lt;a 
-                href="http://localhost:5000/delete/resource" 
-                target="_blank"
-                &gt;
-                  Delete
-                &lt;a/&gt;
-                &lt;/button&gt;
-        
-        `);
-        }
-
-        res.end();
-      });
     }
-  }
-});
 
-//log some output to see everything's ok
-console.log(`Server is running on port: ${PORT} so our API is alive =)`);
+    res.end();
+  });
+},
+};
 
-//start the server
-server.listen(PORT);
+module.exports = resource;
 
     </pre>
     <p class="text">
-      We now have full CRUD functionality in our little API. In a later post we
-      will refactor and improve this project.
+      Test the adding functionality by adding a new resource. Check that it is
+      written in the <span class="snippet">db.json</span> file. Also, try adding
+      a second resource with the same id as an existing one. You will see that
+      it is not written to the .json file and that you get the 'ID MUST BE
+      UNIQUE' response from the server.
     </p>
   </body>
 </html>
