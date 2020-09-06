@@ -1,17 +1,14 @@
 {
-  "name": "node-js-api",
+  "name": "project-test",
   "version": "1.0.0",
-  "description": "node js api project",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
   },
-  "keywords": [
-    "api",
-    "node",
-    "beginner"
-  ],
-  "author": "Dragos",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.4"

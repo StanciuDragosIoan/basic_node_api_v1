@@ -18,9 +18,10 @@
       critical component for both front-end and back-end developers as all of
       them consume data from these APIs in their apps. In this post we will too
       build a very basic NodeJS API that will allow us to perform CRUD
-      operations on our resources. We will later on refactor this little project
-      in a more elegant form, but for starters this is good and it will teach
-      you how to do a lot of basic things related to backend development.
+      operations on our resources. We will later on rebuild this little project
+      in a more elegant form and grow something better out of it, but for
+      starters this is good and it will teach you how to do a lot of basic
+      things related to backend development.
     </p>
     <p class="text center bold">Setup</p>
     <p class="text">
@@ -65,7 +66,7 @@
       <img src="./img/npm-init-5.png" alt="" />
     </div>
     <p class="text">
-      It will also ask you for an author so put your name there:
+      It will also ask you for an author so put your name there and:
     </p>
     <div class="devPic">
       <img src="./img/npm-init-6.png" alt="" />
@@ -107,32 +108,31 @@ const server = http.createServer((req, res) => {
   //define url
   const url = req.url;
 
-  switch(url){
+  switch (url) {
     case "/":
-    //write client response
-    res.write(`
-            &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
-            &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-        `);
-    //send client response
-    res.end();
-    break;
+      //write client response
+      res.write(`
+    &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
+    &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
+    `);
+      //send client response
+      res.end();
+      break;
   }
 });
 
 //log some output to see everything's ok
-console.log(`
-    Server is running on port: 
-    ${PORT} so our API is alive =)`);
+console.log(`Server is running on port: 
+            ${PORT} so our API is alive =)
+            `);
 
 //start the server
 server.listen(PORT);
 
     </pre>
     <p class="text">
-      Next in the package.json file, remove the
-      <span class="snippet">test</span> script add a
-      <span class="snippet">start</span> one under the test one:
+      Next in the <span class="snippet">package.json</span> file, add a
+      <span class="snippet">start</span> script under the test one:
     </p>
     <pre class="code">
       {
@@ -140,8 +140,9 @@ server.listen(PORT);
         "version": "1.0.0",
         "description": "node js api project",
         "main": "server.js",
-        "scripts": { 
-          "start": "node server.js"
+        "scripts": {
+"test": "echo \"Error: no test specified\" && exit 1",
+"start": "node server.js"
         },
         "keywords": [
           "api",
@@ -213,8 +214,9 @@ server.listen(PORT);
         "version": "1.0.0",
         "description": "node js api project",
         "main": "server.js",
-        "scripts": { 
-          "start": "nodemon server.js"
+        "scripts": {
+"test": "echo \"Error: no test specified\" && exit 1",
+"start": "nodemon server.js"
         },
         "keywords": [
           "api",
@@ -235,68 +237,59 @@ server.listen(PORT);
       only have to refresh the webpage). This may seem trivial, but during
       development it is extremely useful and practical.
     </p>
+
     <p class="text center bold">Read (from CRUD)</p>
     <p class="text">
       We will have all our 'resources' stored in a
       <span class="snippet">db.json</span> file and we will write and read from
       that file.
     </p>
-    <p class="text">
-      Start by importing the file system module in our server script. We will
-      also set the
+    <p class="text"> We will set the
       <span class="snippet">Content-Type</span> as
-      <span class="snippet">text/html</span> so we can return some html views
-      from our API. Finally we will define a second endpoint
+      <span class="snippet">text/html</span> so we can return some rudimentary
+      views from our API. Next we will define a second endpoint
       <span class="snippet">/resources</span>:
     </p>
     <pre class="code">
       //import http module for our server
-const http = require("http");
-//import file system module
-const fs = require("fs");
-
-//define port for our server to listen to
-const PORT = process.env.port || 5000;
-
-//create server
-const server = http.createServer((req, res) => {
-  //define url
-  const url = req.url;
-  //set content type header
-  res.setHeader("Content-Type", "text/html");
-
-  switch (url) {
-    case "/":
-      //write client response
-      res.write(`
-        &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
-        &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-            `);
-      //send client response
-      res.end();
-      break;
-    case "/resources":
-      //write client response
-      res.write(`
-    &lt;h1&gt;Welcome to the resources page&lt;/h1&gt;
-    &lt;p&gt;
-        Please see below all our 
-        current resources:
-    &lt;/p&gt;
-`);
-      //send client response
-      res.end();
-      break;
-  }
-});
-
-//log some output to see everything's ok
-console.log(`
-    Server is running on port: 
-    ${PORT} so our API is alive =)`);
-
-//start the server
-server.listen(PORT);
+      const http = require("http"); 
+      
+      //define port for our server to listen to
+      const PORT = process.env.port || 5000;
+      
+      //create server
+      const server = http.createServer((req, res) => {
+        //define url
+        const url = req.url;
+        //set content type header
+        res.setHeader("Content-Type", "text/html");
+      
+        switch (url) {
+          case "/":
+            //write client response
+            res.write(`
+          &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
+          &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
+          `);
+            //send client response
+            res.end();
+            break;
+          case "/resources":
+            res.write("resources here..");
+            res.end();
+            break;
+        }
+      });
+      
+      //log some output to see everything's ok
+      console.log(`
+        Server is running on port: 
+        ${PORT} so our API is alive =)`
+        );
+      
+      //start the server
+      server.listen(PORT);
+      
 
     </pre>
     <p class="text">
@@ -309,49 +302,40 @@ server.listen(PORT);
       you will see the view from our second endpoint.
     </p>
     <p class="text">
-      Our data will be stored in a <span class="snippet">db.json</span> file, so
-      create it and paste the below JSON data in it:
+      It is now time for us to add some hard-coded resources in the
+      <span class="snippet">db.json</span> file so we can implement the 'read'
+      from CRUD. Create the <span class="snippet">db.json</span> file and add
+      the below to it:
     </p>
     <pre class="code">
       {
         "resources": [
-          { 
-            "text": "test", 
-            "id": "1", 
-            "date": "2020-09-17" 
-          },
-          { 
-            "text": "test2323", 
-            "id": "2", 
-            "date": "2020-09-08" 
-          },
-          { 
-            "text": "Test2", 
-            "id": "3", 
-            "date": "2020-09-15" 
-          }
-        ]
-      }
-      
+            {
+              "text":"test",
+              "id":"33",
+              "date":"2020-09-17"
+            },
+
+            {
+              "text":"test",
+              "id":"1",
+              "date":"2020-09-08"
+            }
+      ]
+    }  
     </pre>
     <p class="text">
-      If you have not worked with JSON before, you will see that it is a very
-      handy format, which we can use for a bunch of awesome things. If you did
-      use it, you'll still enjoy this.
-    </p>
-    <p class="text">
-      We will now create a thrid file now
-      <span class="snippet">resource.js</span>. This file will work like a
-      'controller' for our resources (if you are familiar with the MVC pattern)
-      writing, reading and editing them. This file will only have one method for
-      now <span class="snippet">getResources()</span> so let's implement it:
+      The resources will be read and written as JSON data. In order to
+      manipulate them better, we will create a separate 'resource' module which
+      will work as a controller (if you are familiar with the mvc pattern) for
+      the resources. Next, create the <span class="snippet">resource.js</span>
+      module and add the below to it:
     </p>
     <pre class="code">
 const fs = require("fs");
 const resource = {
   getAll: (res) => {
-    fs.readFile("db.json", "utf8", function (err, data) 
-    {
+  fs.readFile("db.json", "utf8", function (err, data){
       if (err) throw err;
       if (data !== "") {
         let resources = JSON.parse(data).resources;
@@ -359,32 +343,34 @@ const resource = {
         resources.map((r) => {
           res.write(`
             &lt;div 
-                style="display:block; 
-                margin:auto; border: 2px solid #ccc; 
-                text-align:center; 
-                width:30rem; 
-                margin-bottom:1rem; 
-                border-radius:10px;"
-            &gt;
-                  &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
-                  &lt;p&gt;ID: ${r.id} &lt;/p&gt;
-                  &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
-                &lt;/div&gt;
-              `);
+              style="display:block; 
+              margin:auto; 
+              border: 2px solid #ccc; 
+              text-align:center; 
+              width:30rem; 
+              margin-bottom:1rem; 
+              border-radius:10px;"
+              &gt;
+              &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
+              &lt;p&gt;ID: ${r.id} &lt;/p&gt;
+              &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
+            &lt;/div&gt;
+          `);
         });
       } else {
         res.write(`
-            &lt;div 
-                style="display:block; 
-                margin:auto; border: 2px solid #ccc; 
-                text-align:center; 
-                width:30rem; 
-                margin-bottom:1rem; 
-                border-radius:10px;"
-            &gt;
-              &lt;p&gt;No current resources&lt;/p&gt;
-            &lt;/div&gt;
-          `);
+        &lt;div 
+          style="display:block; 
+          margin:auto; 
+          border: 2px solid #ccc; 
+          text-align:center; 
+          width:30rem; 
+          margin-bottom:1rem; 
+          border-radius:10px;"
+        &gt;
+          &lt;p&gt;No current resources&lt;/p&gt;
+        &lt;/div&gt;
+      `);
       }
 
       res.end();
@@ -396,25 +382,52 @@ module.exports = resource;
 
     </pre>
     <p class="text">
-      Note how this method, uses the response object
-      <span class="snippet">res</span> as argument and it simply reads the
-      <span class="snippet">db.json</span> file, loops through the resources and
-      displays each of them in a div. The request and response objects are
-      available in the request listener from
-      <span class="snippet">http.createServer((req,res)=>{})</span>
+      Note how the <span class="snippet">resource.js</span> module uses the 
+       <span class="snippet">file system</span> module which will allow us to read from
+       and write to files.
     </p>
+    <p class="text">Next import the resource module up top in server.js:</p>
+    <pre class="code">
+      const resource = require("./resource");
+    </pre>
     <p class="text">
-      Next import the <span class="snippet">resource</span> module into
-      <span class="snippet">server.js</span> and call the
-      <span class="snippet">getResources()</span> method when the
-      <span class="snippet">/resources</span>
-      endpoint is hit:
+      Also, modify the <span class="snippet">/resources</span> endpoint in order
+      to call the <span class="snippet">getAll()</span> method as per below:
+    </p>
+    <pre class="code">
+      case "/resources":
+        resource.getAll(res);
+        break;
+    </pre>
+    <p class="text">
+      You can test the default view for
+      <span class="snippet">/resources</span> by deleting all the data in it or
+      by adding a new resource object there. Next, put the data back and we will
+      start working on the add functionality.
+    </p>
+    <p class="text center bold">Create (from CRUD)</p>
+
+    <p class="text">
+      We will now implement the create functionality for our app. We will need 2
+      different requests for this, one will handle the form rendering to the
+      client (so they can add a resource) and the other one will handle the
+      submit and the processing of the data. First, add a second variable for
+      the request method right below the url definition in the server.js:
+    </p>
+    <pre class="code">
+  //define url
+  const url = req.url;
+  //define request
+  const method = req.method;
+    </pre>
+    <p class="text">
+      Next create a 3rd route, this time
+      <span class="snippet">/resource/add</span> in the
+      <span class="snippet">server.js</span> file:
     </p>
     <pre class="code">
 //import http module for our server
 const http = require("http");
-//import file system module
-const fs = require("fs");
 const resource = require("./resource");
 
 //define port for our server to listen to
@@ -424,6 +437,8 @@ const PORT = process.env.port || 5000;
 const server = http.createServer((req, res) => {
   //define url
   const url = req.url;
+  //define request
+  const method = req.method;
   //set content type header
   res.setHeader("Content-Type", "text/html");
 
@@ -431,55 +446,263 @@ const server = http.createServer((req, res) => {
     case "/":
       //write client response
       res.write(`
-        &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
-        &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
-            `);
+    &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
+    &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
+    `);
       //send client response
       res.end();
       break;
     case "/resources":
       resource.getAll(res);
       break;
+    case "/resource/add":
+      if (method === "GET") {
+        res.write(`
+          &lt;h1 
+            style="text-align:center; 
+            margin:3rem;
+          "&gt;
+            Add a new resource
+          &lt;/h1&gt;
+          &lt;form 
+            style="display:block; 
+            margin:auto; 
+            border: 2px solid #ccc; 
+            text-align:center; 
+            width:30rem; 
+            margin-bottom:1rem; 
+            padding:2rem!important; 
+            font-size:1.5rem!important;" 
+            
+            action="/resource/add" 
+            
+            method="POST" 
+          &gt;
+            &lt;label for="text"&gt;Resource Text&lt;/label&gt;
+            &lt;input name="text" type="text"/&gt;
+            &lt;br&gt; &lt;br&gt; 
+            &lt;label for="id"&gt;Resource id&lt;/label&gt;
+            &lt;input name="id" type="number"/&gt;
+            &lt;br&gt; &lt;br&gt;
+            &lt;label for="date"&gt;Submission Date&lt;/label&gt;
+            &lt;input name="date" type="date"/&gt;
+            &lt;br&gt; &lt;br&gt;
+            &lt;input 
+              style="display:block; 
+              margin:auto!important; 
+              width:20rem; 
+              font-size:2rem;" 
+              type="submit" 
+              value="Add Resource"&gt; 
+          &lt;/form&gt;
+          `);
+        res.end();
+      } else if (method === "POST") {
+        resource.addResource(req, res);
+      }
+
+      break;
   }
 });
 
 //log some output to see everything's ok
 console.log(`
-    Server is running on port: 
-    ${PORT} so our API is alive =)`);
+  Server is running on port: 
+  ${PORT} so our API is alive =)
+  `);
 
 //start the server
 server.listen(PORT);
 
     </pre>
     <p class="text">
-      Next if you go to
-      <span class="snippet"
-        ><a href="http://localhost:5000/resources" target="_blank"
-          >http://localhost:5000//resources</a
-        ></span
-      >, you can see all the resources displayed as cards in the browser.
+      Note that we check with an <span class="snippet">if(){}</span> statement
+      if the <span class="snippet">request.method</span> is either
+      <span class="snippet">GET</span> or <span class="snippet">POST</span>.If
+      it's <span class="snippet">GET</span> we render the submit form, if it's
+      <span class="snippet">POST</span> we trigger the
+      <span class="snippet">addResource()</span> method from the resource
+      controller.
     </p>
     <p class="text">
-      Feel free to test the endpoint more by deleting/modifiying/adding some
-      more data in <span class="snippet">db.json</span>. Next, put the data back
-      and we will start working on the add functionality.
-    </p>
-    <p class="text center bold">Create (from CRUD)</p>
-    <p class="text">
-      We will now implement the create functionality for our app. We will need 2
-      different requests for this, one will render the form for adding a
-      resource and the other one will handle the submit and the processing of
-      the data. Create a 3rd route, this time
-      <span class="snippet">/resource/add</span> in the
-      <span class="snippet">server.js</span> file:
+      Now let's implement the <span class="snippet">addResource()</span> method
+      in the <span class="snippet">resource.js</span>:
     </p>
     <pre class="code">
-      //snippet from server.js
-      //add this under the 'resource' case 
-      case "/resource/add":
-      if (method === "GET") {
+const fs = require("fs");
+
+const resource = {
+  getAll: (res) => {
+  fs.readFile("db.json", "utf8", function (err, data) {
+      if (err) throw err;
+      if (data !== "") {
+        let resources = JSON.parse(data).resources;
+        resources.map((r) => {
+          res.write(`
+            &lt;div 
+              style="
+                display:block; 
+                margin:auto; 
+                border: 2px solid #ccc; 
+                text-align:center; 
+                width:30rem; 
+                margin-bottom:1rem; 
+                border-radius:10px;"
+              &gt;
+              &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
+              &lt;p&gt;ID: ${r.id} &lt;/p&gt;
+              &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
+            &lt;/div&gt;
+          `);
+        });
+      } else {
         res.write(`
+        &lt;div 
+          style="display:block; 
+          margin:auto; 
+          border: 2px solid #ccc; 
+          text-align:center; 
+          width:30rem; 
+          margin-bottom:1rem; 
+          border-radius:10px;"
+        &gt;
+          &lt;p&gt;No current resources&lt;/p&gt;
+        &lt;/div&gt;
+      `);
+      }
+
+      res.end();
+    });
+  },
+
+  addResource: (req, res) => {
+    const body = [];
+    req.on("data", (chunk) => {
+      body.push(chunk);
+    });
+
+    req.on("end", () => {
+    const parsedBody = Buffer.concat(body).toString();
+  let rawData = parsedBody.split("&").map((item) => {
+    return item.split("=")[1];
+  });
+
+      let dataObj = {};
+
+      dataObj.text = rawData[0].split("+").join(" ");
+      dataObj.id = rawData[1];
+      dataObj.date = rawData[2];
+
+      fs.readFile("./db.json", "utf8", (err, data) => {
+        if (err) {
+          throw err;
+        }
+
+        let resources;
+        let objToWrite = {};
+        if (data !== "") {
+          let resources = JSON.parse(data).resources;
+          let ids = [];
+          resources.map((r) => {
+            ids.push(r.id.toString());
+          });
+
+          if (ids.includes(dataObj.id)) {
+            res.write("ID MUST BE UNIQUE");
+            return res.end();
+          } else {
+            objToWrite = {
+              resources,
+            };
+            objToWrite.resources.push(dataObj);
+          }
+        } else {
+          resources = [];
+          resources.push(dataObj);
+          objToWrite.resources = resources;
+        }
+
+        fs.writeFile("db.json", 
+          JSON.stringify(objToWrite), (err) => {});
+
+        res.write("Resource added successfully");
+        res.end();
+      });
+    });
+  },
+};
+
+module.exports = resource;
+      
+          </pre
+    >
+    <p class="text">
+      Note that the method <span class="snippet">addResource()</span> simply
+      reads through the resources file, checks all the IDs by adding them to an
+      array, and checks if the new id from the resource we are about to add,
+      already exists in the IDs array. If it exists, it does not add it, so we
+      can only add unique IDs which have not been added before.
+    </p>
+    <p class="text">
+      Test the method by trying to add different resources. Try adding the same
+      id a second time and see what happens.
+    </p>
+    <p class="text center bold">Update and Delete (complete CRUD)</p>
+    <p class="text">
+      We will now create the update and delete functionalities. We want the user
+      to go to <span class="snippet">/resource/:id</span> (so something like
+      <span class="snippet">/resource/3</span> ) and there to have the
+      possibility to edit/delete the resource with the id 3 (if it exists) or to
+      be prompted to enter it if it does not exist.
+    </p>
+    <p class="text">
+      Since we want to have a dynamic manipulation of URL (we want the user to
+      access a resource based on id when they hit
+      <span class="snippet">/resource/:id</span> ), but we want them to get a
+      404 error if they try something random like
+      <span class="snippet">/resource/test</span>, we will use the
+      <span class="snippet">default</span> case of the
+      <span class="snippet">switch</span>
+    </p>
+    <p class="text">
+      Start by importing the <span class="snippet">fs</span> module in the
+      <span class="snippet">server.js</span> and by processing the URL a bit in
+      the <span class="snippet">default</span> case of the switch statement:
+    </p>
+    <pre class="code">
+//import http module for our server
+const http = require("http");
+const resource = require("./resource");
+const fs = require("fs");
+
+//define port for our server to listen to
+const PORT = process.env.port || 5000;
+
+//create server
+const server = http.createServer((req, res) => {
+//define url
+const url = req.url;
+//define request
+const method = req.method;
+//set content type header
+res.setHeader("Content-Type", "text/html");
+
+switch (url) {
+  case "/":
+    //write client response
+    res.write(`
+  &lt;h1&gt;Welcome to our nodeJS API&lt;/h1&gt;
+  &lt;p&gt;This is your first endpoint =)&lt;/p&gt;
+  `);
+    //send client response
+    res.end();
+    break;
+  case "/resources":
+    resource.getAll(res);
+    break;
+  case "/resource/add":
+    if (method === "GET") {
+      res.write(`
         &lt;h1 
           style="text-align:center; 
           margin:3rem;"
@@ -496,123 +719,332 @@ server.listen(PORT);
           padding:2rem!important; 
           font-size:1.5rem!important;" 
           
-          action="/resource/add"
+          action="/resource/add" 
           
-          method="POST"
-        &gt;
+          method="POST"  
+          &gt;
           &lt;label for="text"&gt;Resource Text&lt;/label&gt;
           &lt;input name="text" type="text"/&gt;
-          &lt;br&gt; &lt;br&gt; 
+          &lt;br&gt; &lt;sbr&gt; 
           &lt;label for="id"&gt;Resource id&lt;/label&gt;
           &lt;input name="id" type="number"/&gt;
-          &lt;br&gt; &lt;br&gt;
+          &lt;br&gt; &lt;sbr&gt;
           &lt;label for="date"&gt;Submission Date&lt;/label&gt;
           &lt;input name="date" type="date"/&gt;
-          &lt;br&gt; &lt;br&gt;
+          &lt;br&gt; &lt;sbr&gt;
           &lt;input 
             style="display:block; 
             margin:auto!important; 
             width:20rem; 
             font-size:2rem;" 
+            
             type="submit" 
             
-            value="Add Resource"&gt; 
+            value="Add Resource"
+          &gt; 
         &lt;/form&gt;
         `);
-        res.end();
-      } else if (method === "POST") {
-        resource.addResource(req, res);
-      }
+      res.end();
+    } else if (method === "POST") {
+      resource.addResource(req, res);
+    }
+    break;
+  default:
+//split url to check params
+let params = url.split("/");
+let id = params[2];
+//make sure the value after /resource/ is a number
+if (id !== undefined && !isNaN(id)) {
+  fs.readFile("db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+      let IDs = [];
+      let resourceToEdit;
+      resources.map((r) =&gt; {
+        IDs.push(r.id);
+        if (r.id === id) {
+          resourceToEdit = r;
+        }
+      });
+    
+      if (IDs.includes(id)) {
+        res.write(`
+          &lt;h1 
+            style="text-align:center; 
+            display:block; 
+            margin:auto; 
+            width:30rem; 
+            margin-top:5rem; 
+            border:5px solid #ccc; 
+            border-radius:10px; 
+            padding:3rem;" 
+          &gt;  
+            Edit/Delete resource with id 
+            &lt;span 
+              style="border-bottom:5px solid #000;"
+            &gt;
+              ${id}
+            &lt;/span&gt;
+        &lt;/h1&gt;
+   
 
-      break;
+      &lt;button 
+        style="display:block; 
+        margin:auto; 
+        width:20rem; 
+        height:3rem; 
+        font-size:1.5rem; 
+        margin-top:2rem;"
+      &gt;
+    &lt;a  
+      target="_blank" 
+      href="http://localhost:5000/edit/resource/${id}"
+    &gt;
+      Edit resource with id ${id}
+    &lt;/a&gt;
+  &lt;/button&gt;
+  
+  &lt;div style="display:block;
+  margin:auto;
+  width:20rem;
+  font-size:1.5rem;
+  text-align:center;
+  margin-top:1rem;
+  background:#ggg;
+  border:2px solid #ccc;
+  border-radius:15px;"
+&gt;
+
+text:${resourceToEdit.text}
+&lt;br&gt;
+id: ${resourceToEdit.id}
+&lt;br&gt;
+last edit: ${resourceToEdit.date}
+&lt;/div&gt;
+
+  &lt;button 
+    style="display:block; 
+    margin:auto; 
+    width:20rem; 
+    height:3rem; 
+    font-size:1.5rem; 
+    margin-top:2rem;"
+  &gt;
+    &lt;a  
+      target="_blank" 
+      href="http://localhost:5000/delete/resource/${id}"
+    &gt;
+      Delete resource with id ${id}
+    &lt;/a&gt;
+  &lt;/button&gt;
+`);
+} else {
+  res.write(`
+    &lt;h1 
+      style="text-align:center; 
+      display:block; 
+      margin:auto; 
+      width:30rem; 
+      margin-top:5rem; 
+      border:5px solid #ccc; 
+      border-radius:10px; 
+      padding:3rem;"
+    &gt;
+      There is currently no available resource 
+      with the id ${id} to delete/update.
+      Add it by going to 
+        &lt;a 
+          href="http://localhost:5000/resource/add" 
+          target="_blank"
+        &gt;
+          http://localhost:5000/resource/add
+        &lt;/a&gt; 
+    &lt;/h1&gt;
+  `);
+}
+res.end(); 
+} else {
+  res.write(`
+    &lt;h1 
+      style="text-align:center; 
+      display:block; 
+      margin:auto; 
+      width:30rem; 
+      margin-top:5rem; 
+      border:5px solid #ccc; 
+      border-radius:10px; 
+      padding:3rem;"
+      &gt;
+        There are currently no available resources 
+        to delete/update.
+        Add some by going to 
+        &lt;a 
+          href="http://localhost:5000/resource/add" 
+          target="_blank"
+        &gt;
+          http://localhost:5000/resource/add
+        &lt;/a&gt; 
+      &lt;/h1&gt;
+    `);
+    } 
+  });
+} else {
+    res.write("404 error page not found");
+    res.end();
+    }
+  }
+});
+
+//log some output to see everything's ok
+console.log(`
+  Server is running on port: 
+  ${PORT} so our API is alive =)
+`);
+
+//start the server
+server.listen(PORT);
+
     </pre>
+    id
     <p class="text">
-      Note how we check the <span class="snippet">method</span> variable, to see
-      if we have a <span class="snippet">GET</span> or
-      <span class="snippet">POST</span> request. The method is a property of the
-      request object ( <span class="snippet">req</span> ) We need to define the
-      <span class="snippet">method</span> variable so add it right under the url
-      in <span class="snippet">server.js</span>:
+      Now if we got to <span class="snippet">/resource/id</span>, the app checks
+      if we have the resource and if it finds it, it returns a view prompting us
+      to edit or delete it, if we do not have it, it prompts us to add it. If we
+      try a wrong endpoint like <span class="snippet">/resource/test</span> it
+      returns a 404 page.
+    </p>
+    <p class="text">
+      Text the new endpoint by trying to reach
+      <span class="snippet">/resource/1</span> and to
+      <span class="snippet">resource/test</span>.
+    </p>
+    <p class="text">
+      Before moving on with our little API, let's refactor a part of it a bit. I
+      do not want how we crammed that much logic into the
+      <span class="snippet">default</span> case of the
+      <span class="snippet">switch</span> statement, and we also had to import
+      the <span class="snippet">fs</span> module into the
+      <span class="snippet">server.js</span>.
+    </p>
+    <p class="text">
+      All the logic that we crammed into the
+      <span class="snippet">default</span> case of the switch statement
+      basically checks if resource exists based on the url and returns views
+      based on that so we can implement a method to do just that in our
+      <span class="snippet">resource.js</span> module.
+    </p>
+    <p class="text">
+      Copy all the logic under the <span class="snippet">default</span> case
+      somewhere, and replace it with:
     </p>
     <pre class="code">
-  //define url
-  const url = req.url;
-  //define method
-  const method = req.method;
+default:
+  resource.checkIfResourceExistsBasedOnUrl(req, res);
+  break;
     </pre>
     <p class="text">
-      Now if you go to:
-
-      <a href="http://localhost:5000/resource/add" target="_blank"
-        >http://localhost:5000/resource/add</a
-      >
-      we can see the form in the browser.
-    </p>
-    <p class="text">
-      Let's now implement the <span class="snippet">addResource()</span> method
-      in <span class="snippet">resource.js</span>. Note that the method
-      basically takes the input from the user, and adds it to the
-      <span class="snippet">db.json</span> file, while making sure the id we
-      introduce is unique. So we cannot introduce the same id twice:
+      Note that the new method takes in the request and response as parameters.
+      Next, implement it in the <span class="snippet">resource.js</span>:
     </p>
     <pre class="code">
 const fs = require("fs");
 const resource = {
-addResource: (req, res) => {
+getAll: (res) => {
+  fs.readFile("db.json", "utf8", function (err, data){
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+      resources.map((r) => {
+      res.write(`
+        &lt;div 
+          style="
+          display:block; 
+          margin:auto; 
+          border: 2px solid #ccc; 
+          text-align:center; 
+          width:30rem; 
+          margin-bottom:1rem; 
+          border-radius:10px;"
+        &gt;
+        &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
+        &lt;p&gt;ID: ${r.id} &lt;/p&gt;
+        &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
+        &lt;/div&gt;
+      `);
+    });
+  } else {
+        res.write(`
+          &lt;div 
+            style="display:block; 
+            margin:auto; 
+            border: 2px solid #ccc; 
+            text-align:center; 
+            width:30rem; 
+            margin-bottom:1rem; 
+            border-radius:10px;"
+          &gt;
+          &lt;p&gt;No current resources&lt;/p&gt;
+          &lt;/div&gt;
+        `);
+      }
+    res.end();
+  });
+},
+
+addResource: (req, res) =&gt; {
   const body = [];
-  req.on("data", (chunk) => {
+  req.on("data", (chunk) =&gt; {
     body.push(chunk);
   });
 
-  req.on("end", () => {
-    const parsedBody = Buffer
-      .concat(body).toString();
-    let rawData = parsedBody
-      .split("&").map((item) => {
-      return item.split("=")[1];
+  req.on("end", () =&gt; {
+    const parsedBody = Buffer.concat(body).toString();
+    let rawData = parsedBody.split("&").map((item) =&gt;{
+    return item.split("=")[1];
+  });
+
+  let dataObj = {};
+
+  dataObj.text = rawData[0].split("+").join(" ");
+  dataObj.id = rawData[1];
+  dataObj.date = rawData[2];
+
+  fs.readFile("./db.json", "utf8", (err, data) =&gt; {
+    if (err) {
+      throw err;
+    }
+
+  let resources;
+  let objToWrite = {};
+  if (data !== "") {
+    let resources = JSON.parse(data).resources;
+    let ids = [];
+    resources.map((r) =&gt; {
+      ids.push(r.id.toString());
     });
 
-    let dataObj = {};
+  if (ids.includes(dataObj.id)) {
+    res.write("ID MUST BE UNIQUE");
+    //stop execution here
+    return res.end();
+  } else {
+    objToWrite = {
+      resources,
+    };
+    objToWrite.resources.push(dataObj);
+  }
+} else {
+  resources = [];
+  resources.push(dataObj);
+  objToWrite.resources = resources;
+}
 
-    dataObj.text = rawData[0].split("+")
-                             .join(" ");
-    dataObj.id = rawData[1];
-    dataObj.date = rawData[2];
-
-fs.readFile("./db.json", "utf8", (err, data) => {
-      if (err) {
-        throw err;
-      }
-
-      let resources;
-      let objToWrite = {};
-      if (data !== "") {
-        let resources = JSON.parse(data).resources;
-        var isUnique = true;
-        let ids = [];
-        resources.map((r) => {
-          ids.push(r.id.toString());
-        });
-
-        if (ids.includes(dataObj.id)) {
-          res.write("ID MUST BE UNIQUE");
-          return res.end();
-        } else {
-          objToWrite = {
-            resources,
-          };
-          objToWrite.resources.push(dataObj);
-        }
-      } else {
-        resources = [];
-        resources.push(dataObj);
-        objToWrite.resources = resources;
-      }
-
-      fs.writeFile(
-          "db.json", 
-          JSON.stringify(objToWrite), 
-          (err) => {});
+fs.writeFile(
+  "db.json", 
+  JSON.stringify(objToWrite), 
+  (err) =&gt; {}
+);
 
       res.write("Resource added successfully");
       res.end();
@@ -620,58 +1052,971 @@ fs.readFile("./db.json", "utf8", (err, data) => {
   });
 },
 
-getAll: (res) => {
-  fs.readFile("db.json", "utf8", function (err, data) 
-  {
-    if (err) throw err;
-    if (data !== "") {
-      let resources = JSON.parse(data).resources;
+checkIfResourceExistsBasedOnUrl: (req, res) =&gt; {
+  let url = req.url;
+  //split url to check params
+  let params = url.split("/");
+  let id = params[2];
+    //make sure the value after /resource/ is a number
+if (id !== undefined && !isNaN(id)) {
+fs.readFile("db.json", "utf8", function (err, data) {
+  if (err) throw err;
+  if (data !== "") {
+    let resources = JSON.parse(data).resources;
+    let IDs = [];
+    let resourceToEdit;
+    resources.map((r) =&gt; {
+      IDs.push(r.id);
+      if(r.id === id) {
+        resourceToEdit = r;
+      }
+    });
+  if (IDs.includes(id)) {
+res.write(`
+    &lt;h1 
+    style="text-align:center; 
+    display:block; 
+    margin:auto; 
+    width:30rem; 
+    margin-top:5rem; 
+    border:5px solid #ccc; 
+    border-radius:10px; 
+    padding:3rem;" 
+    &gt;  
+    Edit/Delete resource with 
+    id &lt;span 
+    style="border-bottom:5px solid #000;"
+    &gt;
+    ${id}
+    &lt;/span&gt;
+    &lt;/h1&gt;
+    &lt;button 
+    style="display:block; 
+    margin:auto; 
+    width:20rem; 
+    height:3rem; 
+    font-size:1.5rem; 
+    margin-top:2rem;"
+    &gt;
+    &lt;a  
+    target="_blank" 
+    href="http://localhost:5000/edit/resource/${id}"&gt;
+    Edit resource with id ${id}
+    &lt;/a&gt;
+    &lt;/button&gt;
+    &lt;div style="display:block;
+    margin:auto;
+    width:20rem;
+    font-size:1.5rem;
+    text-align:center;
+    margin-top:1rem;
+    background:#ggg;
+    border:2px solid #ccc;
+    border-radius:15px;"
+&gt;
+  
+text:${resourceToEdit.text}
+&lt;br&gt;
+id: ${resourceToEdit.id}
+&lt;br&gt;
+last edit: ${resourceToEdit.date}
+&lt;/div&gt;
+    &lt;button 
+    style="display:block; 
+    margin:auto; 
+    width:20rem; 
+    height:3rem; 
+    font-size:1.5rem; 
+    margin-top:2rem;"
+    &gt;
+    &lt;a  
+    target="_blank" 
+    href="http://localhost:5000/delete/resource/${id}"
+    &gt;
+    Delete resource with id ${id}
+    &lt;/a&gt;
+    &lt;/button&gt;
+  `);
+  } else {
+    res.write(`
+      &lt;h1 
+      style="text-align:center; 
+      display:block; 
+      margin:auto; 
+      width:30rem; 
+      margin-top:5rem; 
+      border:5px solid #ccc; 
+      border-radius:10px; 
+      padding:3rem;"&gt;
 
-      resources.map((r) => {
-        res.write(`
-          &lt;div 
-              style="display:block; 
-              margin:auto; border: 2px solid #ccc; 
-              text-align:center; 
-              width:30rem; 
-              margin-bottom:1rem; 
-              border-radius:10px;"
-          &gt;
-                &lt;p&gt;Resource: ${r.text}&lt;/p&gt;
-                &lt;p&gt;ID: ${r.id} &lt;/p&gt;
-                &lt;p&gt;Date submitted: ${r.date} &lt;/p&gt;
-              &lt;/div&gt;
-            `);
+      There is currently no available resource 
+      with the id ${id} to delete/update.
+      Add it by going to 
+      &lt;a 
+      href="http://localhost:5000/resource/add" 
+      target="_blank"&gt;
+      http://localhost:5000/resource/add
+      &lt;/a&gt; 
+      &lt;/h1&gt;
+    `);
+  }
+  res.end();
+} else {
+    res.write(`
+        &lt;h1 
+        style="text-align:center; 
+        display:block; 
+        margin:auto; 
+        width:30rem; 
+        margin-top:5rem; 
+        border:5px solid #ccc; 
+        border-radius:10px; 
+        padding:3rem;"
+        &gt;
+        There are currently no available resources 
+        to delete/update.
+        Add some by going to 
+        &lt;a 
+        href="http://localhost:5000/resource/add" 
+        target="_blank"&gt;
+        http://localhost:5000/resource/add
+        &lt;/a&gt; 
+          &lt;/h1&gt;
+        `);
+        }
       });
     } else {
-      res.write(`
-          &lt;div 
-              style="display:block; 
-              margin:auto; border: 2px solid #ccc; 
-              text-align:center; 
-              width:30rem; 
-              margin-bottom:1rem; 
-              border-radius:10px;"
-          &gt;
-            &lt;p&gt;No current resources&lt;/p&gt;
-          &lt;/div&gt;
-        `);
-    }
-
+    res.write("404 error page not found");
     res.end();
-  });
-},
+    }
+  },
 };
 
 module.exports = resource;
 
     </pre>
     <p class="text">
-      Test the adding functionality by adding a new resource. Check that it is
-      written in the <span class="snippet">db.json</span> file. Also, try adding
-      a second resource with the same id as an existing one. You will see that
-      it is not written to the .json file and that you get the 'ID MUST BE
-      UNIQUE' response from the server.
+      Now remove the <span class="snippet">fs</span> import from
+      <span class="snippet">server.js</span> and your code should work exactly
+      the same.
+    </p>
+    <p class="text">
+      So we can now see a resource and decide to edit or delete it, but we
+      cannot do that yet, let's implement that further on. Note that if you go
+      to an existing resource, you get to click on a link to delete or edit it,
+      the resource. But if you click on the 'edit' or 'delete' links, we get a 404, 
+      as we have not implemented anything yet.
+    </p>
+    <p class="text">
+      We will use the
+      <span class="snippet">checkIfResourceExistsBasedOnUrl</span> method for
+      this, by adding to it the 2 further cases for edit and delete logic. Since
+      it will also perform edit and delete logic and not only search, let's
+      change its name to <span class="snippet">searchEditOrDeleteResource</span>
+    </p>
+    <p class="text">
+      Also, add a second variable to the method, the one for the (ironically)
+      method, as we need to check for <span class="snippet">GET</span> or
+      <span class="snippet">POST</span> if we want to add the edit/delete logic.
+    </p>
+    <p class="text">
+      In the newly named
+      <span class="snippet">searchEditOrDeleteResource</span> method, add a
+      second definition just under the url:
+    </p>
+    <pre class="code">
+//in searchEditOrDeleteResource()  in resource.js
+let url = req.url;
+let method = req.method;
+    </pre>
+    <p class="text">
+      Next, add another <span class="snipept">if(){}</span> statement for the
+      edit logic. We simply want to perform the edit if the request uses a
+      <span class="snippet"
+        >POST method, and to return a 404 page if it uses a
+        <span class="snippet">GET</span> method.
+      
+    </p>
+    <p class="text">
+      For simplicity's sake (and because I am sort of sick 
+      of editing and intenting long block of codes) and because 
+      I think, this is fairly self-explanatory, I will 
+      add below only the <span class="snippet">searchEditOrDeleteResource</span>
+      code:
+    </p>
+    <pre class="code">
+      searchEditOrDeleteResource: (req, res) => {
+        let url = req.url;
+        let method = req.method;
+        //split url to check params
+        let params = url.split("/");
+        let id = params[2];
+//make sure the value after /resource/ is a number
+if (id !== undefined && !isNaN(id)) {
+  fs.readFile("db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+      let IDs = [];
+      let resourceToEdit;
+      resources.map((r) => {
+        IDs.push(r.id);
+        if (r.id === id) {
+          resourceToEdit = r;
+        }
+      });
+      if (IDs.includes(id)) {
+        res.write(`
+          &lt;h1 style="text-align:center; 
+          display:block; 
+          margin:auto; 
+          width:30rem; 
+          margin-top:5rem; 
+          border:5px solid #ccc; 
+          border-radius:10px; 
+          padding:3rem;" 
+        &gt;  
+            Edit/Delete resource with
+              id &lt;span 
+              style="border-bottom:5px solid #000;"
+              &gt;
+              ${id}
+            &lt;/span&gt;
+        &lt;/h1&gt;
+            &lt;button 
+              style="display:block; 
+              margin:auto; width:20rem; 
+              height:3rem; 
+              font-size:1.5rem; 
+              margin-top:2rem;"
+            &gt;
+            &lt;a 
+              target="_blank" 
+      href="http://localhost:5000/edit/resource/${id}"&gt;
+              Edit resource with id ${id}
+            &lt;/a&gt;
+                &lt;/button&gt;
+
+                &lt;div style="display:block;
+                      margin:auto;
+                      width:20rem;
+                      font-size:1.5rem;
+                      text-align:center;
+                      margin-top:1rem;
+                      background:#ggg;
+                      border:2px solid #ccc;
+                      border-radius:15px;"
+                &gt;
+                    
+                text:${resourceToEdit.text}
+                &lt;br&gt;
+                id: ${resourceToEdit.id}
+                &lt;br&gt;
+                last edit: ${resourceToEdit.date}
+                &lt;/div&gt;
+                &lt;button 
+                  style="display:block; 
+                  margin:auto; 
+                  width:20rem; 
+                  height:3rem; 
+                  font-size:1.5rem; 
+                  margin-top:2rem;"
+                &gt;
+                  &lt;a 
+                    target="_blank" 
+    href="http://localhost:5000/delete/resource/${id}"
+                  &gt;
+                    Delete resource with id ${id}
+                  &lt;/a&gt;
+                &lt;/button&gt;
+              `);
+      } else {
+        res.write(`
+              &lt;h1 
+                style="text-align:center; 
+                display:block; 
+                margin:auto; 
+                width:30rem; 
+                margin-top:5rem; 
+                border:5px solid #ccc; 
+                border-radius:10px; 
+                padding:3rem;"
+              &gt;
+                There is currently no available 
+          resource with the id ${id} to delete/update.
+                Add it by going to 
+                &lt;a 
+            href="http://localhost:5000/resource/add" 
+                  target="_blank"&gt;
+              http://localhost:5000/resource/add
+                &lt;/a&gt; 
+              &lt;/h1&gt;
+              `);
+      }
+      res.end();
+    } else {
+      res.write(`
+              &lt;h1 
+                style="text-align:center; 
+                display:block; 
+                margin:auto; 
+                width:30rem; 
+                margin-top:5rem; 
+                border:5px solid #ccc; 
+                border-radius:10px; 
+                padding:3rem;"
+              &gt;
+                There are currently no available 
+                resources to delete/update.
+                Add some by going to 
+                  &lt;a 
+              href="http://localhost:5000/resource/add" 
+                    target="_blank"&gt;
+                  http://localhost:5000/resource/add
+                  &lt;/a&gt; 
+              &lt;/h1&gt;
+            `);
+    }
+  });
+        } else if (params[1] === "edit") {
+          let tempId = params[3];
+          res.write(`
+          &lt;h1 
+            style="text-align:center; 
+            margin:3rem;"&gt;
+              EDIT resource with id ${tempId}
+          &lt;/h1&gt;
+          &lt;form  
+            style="display:block; 
+            margin:auto; 
+            border: 2px solid #ccc; 
+            text-align:center; 
+            width:30rem; 
+            margin-bottom:1rem; 
+            padding:2rem!important; 
+            font-size:1.5rem!important;"
+
+          action="/resource/edit" method="POST"  
+          &gt;
+            &lt;label for="text"&gt;Resource Text&lt;/label&gt;
+            &lt;input name="text" type="text"/&gt;
+            &lt;br&gt; &lt;br&gt; 
+            &lt;label for="id"&gt;Resource id&lt;/label&gt;
+      &lt;input name="id" type="number" value='${tempId}'/&gt;
+            &lt;br&gt; &lt;br&gt;
+            &lt;label for="date"&gt;Submission Date&lt;/label&gt;
+            &lt;input name="date" type="date"/&gt;
+            &lt;br&gt; &lt;br&gt;
+            &lt;input 
+              style="display:block; 
+              margin:auto!important; 
+              width:20rem; 
+              font-size:2rem;" 
+
+              type="submit" 
+              value="Edit Resource"&gt; 
+          &lt;/form&gt;
+          `);
+          res.end();
+        } else {
+          res.write("404 error page not found");
+          res.end();
+        }
+      },
+    </pre>
+    <p class="text">
+      Note that we simply added an else statement with <span class="snippet">else if (params[1] === "edit"){}</span>
+      right before the final <span class="snippet">else(){}</span> that returns a 404. This also added the view for the 
+      form used to edit a resource (before, the edit link would return a 404 page).
+    </p>
+    <p class="text">
+      However, in order for the edit logic to work, 
+      we need to add another case in the <span class="snippet">switch</span>
+      statement in <span class="snippet">server.js</span>. Remeber the form for editing the resources, makes a post request to <span class="snippet">/resource/edit</span>.
+      We need to add an <span class="snippet">editResource()</span> method in the <span class="snippet">resource.js</span> module, that does 
+      just that.
+    </p>
+    <p class="text">
+      Start by adding the case for the <span class="snippet">/resource/edit</span> in <span class="snippet">server.js</span>,
+      just above the <span class="snippet">default</span> case:
+    </p>
+    <pre class="code">
+      case "/resource/edit":
+      if (method === "POST") {
+        resource.editResource(req, res);
+      } else if (method === "GET") {
+        res.write("404 error page not found!");
+        res.end();
+      }
+      break;
+    </pre>
+    <p class="text">
+      Next, implement the <span class="snippet">editResource()</span> method in <span class="snippet">resource.js</span>:
+    </p>
+    <pre class="code">
+      
+  editResource: (req, res) => {
+    const body = [];
+    req.on("data", (chunk) => {
+      body.push(chunk);
+    });
+req.on("end", () => {
+  const parsedBody = Buffer.concat(body)
+                           .toString();
+  let idToUpdate = parsedBody.split("&")[1]
+                             .split("=")[1];
+  let textToUpdate = parsedBody.split("&")[0]
+                               .split("=")[1];
+  let dateToUpdate = parsedBody.split("&")[2]
+                               .split("=")[1];
+   
+
+  fs.readFile("db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+      resources.map((r, index) => {
+        if (r.id === idToUpdate) {
+          r.text = textToUpdate.split("+").join(" ");
+          r.id = idToUpdate;
+          r.date = dateToUpdate;
+        }
+      });
+
+      let obj = {};
+      obj.resources = resources;
+      fs.writeFile(
+          "db.json", 
+          JSON.stringify(obj), 
+          (err) => {}
+        );
+  }
+});
+      res.write(`
+       
+        RESOURCE with the id 
+        ${idToUpdate} was edited successfully
+      `);
+      res.end();
+    });
+  },
+    </pre>
+    <p class="text">
+      Now test the update of a resource. Go to <span class="snippet">/resource/1</span> and try editing the resource with the id 1.
+    </p>
+    <p class="text">
+      Finally, we want to be able to delete resources. We will implement this similarly to how we implemented
+      the edit functionality (we will add another <span class="snippet">if(){}</span> statement
+      in the <span class="snippet">searchEditOrDeleteResource</span> method, to render the form for 
+      the delete request and then we will implement a <span class="snippet">deleteResource()</span> method
+      in the <span class="snippet">resource.js</span> module).
+    </p>
+    <p class="text">
+      Start by adding the <span class="snippet">if(){}</span> statement, checking if the url is <span class="snippet">/resource/delete</span>
+      in the <span class="snippet">searchEditOrDeleteResource</span> method, right before the
+      final <span class="snippet">else(){}</span> statement that returns a 404 page:
+    </p>
+    <pre class="code">
+//searchEditOrDeleteResource() in resource.js
+
+searchEditOrDeleteResource: (req, res) => {
+  let url = req.url;
+  let method = req.method;
+  //split url to check params
+  let params = url.split("/");
+  let id = params[2];
+//make sure the value after /resource/ is a number
+if (id !== undefined && !isNaN(id)) {
+fs.readFile("db.json", "utf8", function (err, data) {
+if (err) throw err;
+if (data !== "") {
+let resources = JSON.parse(data).resources;
+let IDs = [];
+let resourceToEdit;
+resources.map((r) => {
+  IDs.push(r.id);
+  if (r.id === id) {
+    resourceToEdit = r;
+  }
+});
+if (IDs.includes(id)) {
+  res.write(`
+    &lt;h1 style="text-align:center; 
+    display:block; 
+    margin:auto; 
+    width:30rem; 
+    margin-top:5rem; 
+    border:5px solid #ccc; 
+    border-radius:10px; 
+    padding:3rem;" 
+  &gt;  
+      Edit/Delete resource with
+        id &lt;span 
+        style="border-bottom:5px solid #000;"
+        &gt;
+        ${id}
+      &lt;/span&gt;
+  &lt;/h1&gt;
+      &lt;button 
+        style="display:block; 
+        margin:auto; width:20rem; 
+        height:3rem; 
+        font-size:1.5rem; 
+        margin-top:2rem;"
+      &gt;
+      &lt;a 
+        target="_blank" 
+href="http://localhost:5000/edit/resource/${id}"&gt;
+        Edit resource with id ${id}
+      &lt;/a&gt;
+          &lt;/button&gt;
+
+          &lt;div style="display:block;
+                margin:auto;
+                width:20rem;
+                font-size:1.5rem;
+                text-align:center;
+                margin-top:1rem;
+                background:#ggg;
+                border:2px solid #ccc;
+                border-radius:15px;"
+          &gt;
+              
+          text:${resourceToEdit.text}
+          &lt;br&gt;
+          id: ${resourceToEdit.id}
+          &lt;br&gt;
+          last edit: ${resourceToEdit.date}
+          &lt;/div&gt;
+          &lt;button 
+            style="display:block; 
+            margin:auto; 
+            width:20rem; 
+            height:3rem; 
+            font-size:1.5rem; 
+            margin-top:2rem;"
+          &gt;
+            &lt;a 
+              target="_blank" 
+href="http://localhost:5000/delete/resource/${id}"
+            &gt;
+              Delete resource with id ${id}
+            &lt;/a&gt;
+          &lt;/button&gt;
+        `);
+} else {
+  res.write(`
+        &lt;h1 
+          style="text-align:center; 
+          display:block; 
+          margin:auto; 
+          width:30rem; 
+          margin-top:5rem; 
+          border:5px solid #ccc; 
+          border-radius:10px; 
+          padding:3rem;"
+        &gt;
+          There is currently no available 
+    resource with the id ${id} to delete/update.
+          Add it by going to 
+          &lt;a 
+      href="http://localhost:5000/resource/add" 
+            target="_blank"&gt;
+        http://localhost:5000/resource/add
+          &lt;/a&gt; 
+        &lt;/h1&gt;
+        `);
+}
+res.end();
+} else {
+res.write(`
+        &lt;h1 
+          style="text-align:center; 
+          display:block; 
+          margin:auto; 
+          width:30rem; 
+          margin-top:5rem; 
+          border:5px solid #ccc; 
+          border-radius:10px; 
+          padding:3rem;"
+        &gt;
+          There are currently no available 
+          resources to delete/update.
+          Add some by going to 
+            &lt;a 
+        href="http://localhost:5000/resource/add" 
+              target="_blank"&gt;
+            http://localhost:5000/resource/add
+            &lt;/a&gt; 
+        &lt;/h1&gt;
+      `);
+}
+});
+  } else if (params[1] === "edit") {
+    let tempId = params[3];
+    res.write(`
+    &lt;h1 
+      style="text-align:center; 
+      margin:3rem;"&gt;
+        EDIT resource with id ${tempId}
+    &lt;/h1&gt;
+    &lt;form  
+      style="display:block; 
+      margin:auto; 
+      border: 2px solid #ccc; 
+      text-align:center; 
+      width:30rem; 
+      margin-bottom:1rem; 
+      padding:2rem!important; 
+      font-size:1.5rem!important;"
+
+    action="/resource/edit" method="POST"  
+    &gt;
+      &lt;label for="text"&gt;Resource Text&lt;/label&gt;
+      &lt;input name="text" type="text"/&gt;
+      &lt;br&gt; &lt;br&gt; 
+      &lt;label for="id"&gt;Resource id&lt;/label&gt;
+&lt;input name="id" type="number" value='${tempId}'/&gt;
+      &lt;br&gt; &lt;br&gt;
+      &lt;label for="date"&gt;Submission Date&lt;/label&gt;
+      &lt;input name="date" type="date"/&gt;
+      &lt;br&gt; &lt;br&gt;
+      &lt;input 
+        style="display:block; 
+        margin:auto!important; 
+        width:20rem; 
+        font-size:2rem;" 
+
+        type="submit" 
+        value="Edit Resource"&gt; 
+    &lt;/form&gt;
+    `);
+    res.end();
+  } else if (params[1] === "delete") {
+    let tempId = params[3];
+
+fs.readFile("db.json", "utf8", function (err, data) {
+      if (err) throw err;
+      if (data !== "") {
+        let resources = JSON.parse(data).resources;
+        let IDs = [];
+        resources.map((r) => {
+          IDs.push(r.id);
+        });
+        if (IDs.includes(tempId)) {
+          res.write(`
+          &lt;h1 
+            style="text-align:center; 
+            margin:3rem;"&gt;
+              Delete resource with id ${tempId}
+          &lt;/h1&gt;
+          &lt;form 
+            action="/resource/delete" 
+            method="POST" 
+            style="display:block; 
+            margin:auto; border: 2px solid #ccc; 
+            text-align:center; width:30rem; 
+            margin-bottom:1rem; 
+            padding:2rem!important; 
+            font-size:1.5rem!important;" 
+          &gt;
+            &lt;input  
+              type="hidden" 
+              value=${tempId} 
+              name="id"&gt;
+              &lt;br&gt;&lt;br&gt;
+              &lt;input 
+                style="display:block; 
+                margin:auto!important; 
+                width:20rem; 
+                font-size:2rem;" 
+                
+                type="submit" 
+                
+                value="Delete Resource"&gt; 
+         
+          &lt;/form&gt;
+          `);
+
+          res.end();
+        } else {
+          res.write(`
+          &lt;h1 
+            style="text-align:center; 
+            display:block; 
+            margin:auto; 
+            width:30rem; 
+            margin-top:5rem; 
+            border:5px solid #ccc; 
+            border-radius:10px; 
+            padding:3rem;"
+          &gt;
+      There is currently no available 
+    resource with the id ${tempId} to delete/update.
+            Add it by going to 
+            &lt;a 
+            href="http://localhost:5000/resource/add" 
+              target="_blank"&gt;
+                http://localhost:5000/resource/add
+            &lt;/a&gt; 
+          &lt;/h1&gt;
+        `);
+          res.end();
+        }
+      }
+    });
+  } else {
+    res.write("404 error page not found");
+    res.end();
+  }
+},
+    </pre>
+    <p class="text">
+      Next, add the <span class="snippet">case</span> for the <span class="snippet">/resource/delete</span>
+      endpoint just abode the <span class="snippet">default</span> case in the server.js:
+    </p>
+    <pre class="code">
+      case "/resource/delete":
+      resource.deleteResource(req, res);
+      break;
+    </pre>
+    <p class="text">Now, we only have to implement the <span class="snippet">deleteResource()</span> method
+    in the <span class="snippet">resource.js</span> module</p>
+    <pre class="code">
+//deleteResource
+deleteResource: (req, res) => {
+  const method = req.method;
+  if (method === "POST") {
+    const body = [];
+    req.on("data", (chunk) => {
+      body.push(chunk);
+    });
+    req.on("end", () => {
+      const parsedBody = Buffer.concat(body).toString();
+      let idToDelete = parsedBody.split("=")[1];
+
+  fs.readFile("db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+      resources.map((r, index) => {
+        if (r.id === idToDelete) {
+          resources.splice(index, 1);
+        }
+      });
+      let obj = {};
+      obj.resources = resources;
+      fs.writeFile(
+          "db.json", 
+          JSON.stringify(obj), 
+          (err) => {}
+        );
+    }
+  });
+
+      res.write(`RESOURCE with the id 
+        ${idToDelete} deleted successfully`);
+      res.end();
+    });
+  } else {
+    res.write("404 error page not found!");
+    res.end();
+  }
+},
+    </pre>
+    <p class="text">
+      We now have full CRUD functionality. Feel free to re-test all of the functionalities,
+      starting with the delete one. Try going to a resource and delete it.
+    </p>
+    <p class="text">
+      Let's customize a bit the view returned by the server when we hit the <span class="snippet">http://localhost:5000/</span>
+      (home) endpoint. Modify that case in <span class="snippet">server.js</span> as per below:
+    </p>
+    <pre class="code">
+case "/":
+//write client response
+res.write(`
+&lt;h2 
+  style="font-size: 2rem; 
+  text-align:center; 
+  display:block; 
+  margin:auto; 
+  width:30rem; 
+  margin-top:5rem; 
+  border:5px solid #ccc; 
+  border-radius:10px; 
+  padding:3rem;"&gt;
+  Welcome to our API   
+&lt;/h2&gt;
+&lt;h2 
+  style="font-size: 2rem; 
+  text-align:center; 
+  display:block; 
+  margin:auto; 
+  width:30rem; 
+  margin-top:5rem; 
+  border:5px solid #ccc; 
+  border-radius:10px; 
+  padding:3rem;"&gt;
+  Go to to &lt;a 
+            href="http://localhost:5000/resources" 
+            target="_blank"&gt;
+              http://localhost:5000/resources
+          &lt;/a&gt;  
+          to view all current
+  resources in a pretty format
+&lt;/h2&gt;
+&lt;h2 
+  style="font-size: 2rem; 
+  text-align:center; 
+  display:block; 
+  margin:auto; 
+  width:30rem; 
+  margin-top:5rem; 
+  border:5px solid #ccc; 
+  border-radius:10px; 
+  padding:3rem;"
+&gt;
+  Go to to &lt;a 
+            href="http://localhost:5000/resources/json" 
+            target="_blank"&gt;
+              http://localhost:5000/resources/json
+            &lt;/a&gt;  to view all current
+  resources in a JSON-like format
+&lt;/h2&gt;
+
+&lt;h2 
+  style="font-size: 2rem; 
+  text-align:center; 
+  display:block; 
+  margin:auto; 
+  width:30rem; 
+  margin-top:5rem; 
+  border:5px solid #ccc; 
+  border-radius:10px; padding:3rem;"
+&gt;
+  Go to to &lt;a 
+            href="http://localhost:5000/resource/add" 
+            target="_blank"&gt;
+              http://localhost:5000/resource/add
+            &lt;/a&gt;  to add
+  a new resource. Be careful! The ID you submit must 
+  not already exist, or the API won't let you add 
+  the resource.
+&lt;/h2&gt;
+
+&lt;h2 
+  style="font-size: 2rem; 
+  text-align:center; 
+  display:block; 
+  margin:auto; 
+  width:30rem; 
+  margin-top:5rem; 
+  border:5px solid #ccc; 
+  border-radius:10px; 
+  padding:3rem;"&gt;
+  Go to to &lt;a 
+      href="#"&gt;http://localhost:5000/resource/:id
+    &lt;/a&gt;  (e.g. &lt;a 
+          href="#"&gt;http://localhost:5000/resource/5
+      &lt;/a&gt; to access the resource with id 5)
+  to edit or delete a specific resource. Be careful! 
+  The id you 
+  access via the url must exist.
+&lt;/h2&gt;
+
+&lt;h2 
+  style="font-size: 2rem; 
+        text-align:center; 
+        display:block; 
+        margin:auto; 
+        width:30rem; 
+        margin-top:5rem; 
+        border:5px solid #ccc; 
+        border-radius:10px; 
+        padding:3rem;"
+      &gt;
+  Your 'database' is &lt;a href="#"&gt;db.json&lt;/a&gt;
+  that's where all your resources 
+  data is being persisted so the API 'remembers' it.
+&lt;/h2&gt;
+`);
+//send client response
+res.end();
+break;
+    </pre>
+    <p class="text">
+      Let's now add a final endpoint <span class="snippet">/resources/json</span>. This endpoint,
+      will render the resources ina JSON object so it could be used in a different application
+      which consumes JSON.
+    </p>
+    <p class="text">
+      Add the <span class="snippet">case</span> for it right below the "/resources" case in <span class="snippet">server.js</span>:
+    </p>
+    <pre class="code">
+      case "/resources/json":
+      resource.getJson(res);
+      break;
+    </pre>
+    <p class="text">
+      Next, implement the <span class="snippet">getJson()</span> method in <span class="snippet">resource.js</span>:
+    </p>
+    <pre class="code">
+getJson: (res) => {
+  fs.readFile("db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    if (data !== "") {
+      let resources = JSON.parse(data).resources;
+      res.write(`
+        &lt;h1 style="
+          width:40rem; 
+          display:block; 
+          margin:auto; 
+          margin-top:2rem; 
+          margin-bottom:2rem; 
+          text-align:center;"&gt;
+            Here is the raw data formatted 
+            as JSON if you need it for your app =)
+        &lt;/h1&gt;
+        &lt;div 
+          style="display:block; 
+          padding:2rem; 
+          margin:auto; 
+          border: 2px solid #ccc; 
+          text-align:center; 
+          width:80vw; 
+          margin-bottom:1rem; 
+          border-radius:10px; 
+          word-wrap: break-word!important;"&gt;
+          { "resources":${JSON.stringify(resources)}}
+        &lt;/div&gt;
+        `);
+    } else {
+      res.write(`
+      &lt;div 
+        style="display:block; 
+        margin:auto; border: 2px solid #ccc; 
+        text-align:center; 
+        width:30rem; 
+        margin-bottom:1rem; 
+        border-radius:10px;"&gt;
+        &lt;p&gt;No current resources&lt;/p&gt;
+      &lt;/div&gt;
+        
+    `);
+    }
+    res.end();
+  });
+},
+    </pre>
+    <p class="text">
+      Now if you go to the <span class="snippet">/resources/json</span> endpoint, you see the data displayed
+      as a JSON object which can be copied/imported in a different app (so our API is friendly and 
+      can communicate with other APIs too).
+    </p>
+    <p class="text">
+      Our API is complete and it now has full CRUD functionality. Go to the homepage (<span class="snippet">/</span> endpoint)
+      to see a list of all available URLs and functionalities. Feel free to test and re-test all of them.
     </p>
   </body>
 </html>
